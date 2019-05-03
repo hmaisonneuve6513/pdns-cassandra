@@ -126,7 +126,8 @@ if __name__ == '__main__':
     app.config['HOST'] = os.getenv('HOST', '::1')
     app.config['PORT'] = os.getenv('HOST', 5000)
     app.config['DEBUG'] = os.getenv('DEBUG', False)
-    app.config['KEYSPACE'] = os.getenv('KEYSPACE', 'powerdns')
+    ''' use your own keyspace in place of osnworld_pdns_backend'''
+    app.config['KEYSPACE'] = os.getenv('KEYSPACE', 'osnworld_pdns_backend')
 
     cassandra_nodes = os.getenv('CASSANDRA_NODES')
     if not cassandra_nodes:
