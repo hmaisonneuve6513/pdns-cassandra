@@ -3,7 +3,7 @@ Cassandra remote backend for PowerDNS
 '''
 
 '''
-First start of projetc
+First start of project
 __author__ = 'Ruben Kerkhof <ruben@tilaa.com>'
 '''
 __author__ = 'Herve Maisonneuve <hmaisonneuve6513@gmail.com>'
@@ -47,6 +47,17 @@ def lookup(qname, qtype):
             (qname, qtype)
         )
     return jsonify(result=rrset)
+
+@app.route('/getAllDomains')
+def get_domain_metadata():
+    ''' get all zones for master server included disabled and slave zones'''
+    result = []
+    zones = get_or_404(
+        'SELECT zone FROM domains'
+    )
+    for zone in zones:
+        result.append(zone['zone'])
+    return jsonify(result=result)
 
 
 @app.route('/getDomainMetadata/<name>/<kind>')
