@@ -49,7 +49,7 @@ def lookup(qname, qtype):
     return jsonify(result=rrset)
 
 @app.route('/getAllDomains')
-def get_domain_metadata():
+def get_all_domains():
     ''' get all zones for master server included disabled and slave zones'''
     result = []
     zones = get_or_404(
