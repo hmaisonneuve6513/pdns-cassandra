@@ -52,11 +52,15 @@ def lookup(qname, qtype):
 def get_all_domains():
     ''' get all zones for master server included disabled and slave zones'''
     result = []
+    inter = []
     zones = get_or_404(
         'SELECT zone FROM domains'
     )
     for zone in zones:
-        result.append(zone['zone'])
+        inter = dict(
+            name=zone['zone']
+        )
+        result.append(inter['name'])
     return jsonify(result=result)
 
 
