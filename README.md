@@ -6,14 +6,14 @@ Remote backend backend for PowerDNS that talks to Cassandra
 Getting started
 --------------
 
-Create Cassandra schema with cqlsh (tested with Cassandra 2.0.8):
+Create Cassandra schema with cqlsh version 5.0.1 used and Cassandra 3.11.4:
 
-    CREATE KEYSPACE powerdns WITH replication = {
+    CREATE KEYSPACE [your own keyspace name] WITH replication = {
         'class': 'SimpleStrategy',
         'replication_factor': '3'
     };
 
-    USE dns;
+    USE [your own keyspace];
 
     CREATE TABLE domain_metadata (
         name ascii,
@@ -25,17 +25,23 @@ Create Cassandra schema with cqlsh (tested with Cassandra 2.0.8):
     CREATE TABLE domains (
         zone ascii,
         kind ascii,
+        last_check int,
         masters list<ascii>,
+        notified_serial int,
         PRIMARY KEY (zone)
     );
 
     CREATE TABLE records (
+        doamin_id ascii,
         qname ascii,
-        qtype ascii,
+        auth int,
         content ascii,
+        disabled int,
+        ordername ascii,
         priority int,
+        qtype ascii,
         ttl int,
-        PRIMARY KEY (qname, qtype, content)
+        PRIMARY KEY (domain_id, qname)
     );
 
     CREATE TABLE supermasters (

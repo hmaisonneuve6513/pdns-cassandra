@@ -2,7 +2,11 @@
 Cassandra remote backend for PowerDNS
 '''
 
+'''
+First start of projetc
 __author__ = 'Ruben Kerkhof <ruben@tilaa.com>'
+'''
+__author__ = 'Herve Maisonneuve <hmaisonneuve6513@gmail.com>'
 __license__ = 'MIT'
 __version__ = '0.0.1'
 
