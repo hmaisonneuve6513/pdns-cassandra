@@ -92,10 +92,27 @@ def list(id,domain_id):
     ''' retrieve all records from zone=domain_id '''
 
     zone_id = id
+
+    '''
+    {"result":[
+        {"qtype":"SOA", "qname":"example.com", "content":"dns1.icann.org. hostmaster.icann.org. 2012081600 7200 3600 1209600 3600", "ttl": 3600},
+        {"qtype":"NS", "qname":"example.com", "content":"ns1.example.com", "ttl": 60},
+        {"qtype":"MX", "qname":"example.com", "content":"10 mx1.example.com.", "ttl": 60},
+        {"qtype":"A", "qname":"www.example.com", "content":"203.0.113.2", "ttl": 60},
+        {"qtype":"A", "qname":"ns1.example.com", "content":"192.0.2.2", "ttl": 60},
+        {"qtype":"A", "qname":"mx1.example.com", "content":"192.0.2.3", "ttl": 60}
+    ]}
+    
+    '''
+    result = []
     rrset = get_or_404(
-        'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
+        'SELECT (qtype , qname , content , ttl ) FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
     )
-    return jsonify(result=rrset)
+
+    for record in rrset:
+        result.append(record)
+
+    return jsonify(result=result)
 
 
 @app.route('/getDomainInfo/<zone>')
