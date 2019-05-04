@@ -51,15 +51,27 @@ def lookup(qname, qtype):
 @app.route('/getAllDomains')
 def get_all_domains():
     ''' get all zones for master server included disabled and slave zones'''
-    '''
     result = []
     inter = []
-    '''
     zones = get_or_404(
-        'SELECT zone FROM domains'
+        'SELECT * FROM domains'
     )
+    count = 1
+    '''{"result":[{"id":1,"zone":"unit.test.","masters":["10.0.0.1"],"notified_serial":2,"serial":2,"last_check":1464693331,"kind":"native"}]}'''
+    for zone in zones:
+        inter = dict(
+            id = count,
+            zone=zone['zone'],
+            kind=zone['kind'],
+            masters=zone['masters'],
+            serial=zone['serial']
+            notified_serial=zone['notified_serial'],
+            last_check=zone['last_check'],
+        )
+        result.append(inter)
+        count += count
 
-    return jsonify(result=zones)
+    return jsonify(result=result)
 
 
 @app.route('/getDomainMetadata/<name>/<kind>')
