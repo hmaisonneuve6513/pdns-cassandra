@@ -87,9 +87,9 @@ def get_domain_metadata(name, kind):
     return jsonify(result=result)
 
 
-@app.route('/list/<qname>')
-def axfr(qname):
-    ''' AXFR requests '''
+@app.route('/list/<id>/<qname>')
+def list(qname):
+    ''' retrieve all records frome zone=qname'''
     rrset = get_or_404(
         'SELECT * FROM records WHERE qname = %s', (qname,)
     )
