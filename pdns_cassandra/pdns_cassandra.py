@@ -93,7 +93,7 @@ def list(id,qname):
 
     zone_id = id
     rrset = get_or_404(
-        'SELECT * FROM records WHERE qname = %s', (qname,)
+        'SELECT * FROM records WHERE qname = %s ALLOW FILTERING', (qname,)
     )
     return jsonify(result=rrset)
 
