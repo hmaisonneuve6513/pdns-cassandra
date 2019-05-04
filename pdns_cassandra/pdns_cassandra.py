@@ -64,7 +64,7 @@ def get_all_domains():
             zone=zone['zone'],
             kind=zone['kind'],
             masters=zone['masters'],
-            serial=zone['serial']
+            serial=zone['serial'],
             notified_serial=zone['notified_serial'],
             last_check=zone['last_check'],
         )
