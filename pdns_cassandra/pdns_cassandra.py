@@ -88,8 +88,10 @@ def get_domain_metadata(name, kind):
 
 
 @app.route('/list/<id>/<qname>')
-def list(qname):
+def list(id,qname):
     ''' retrieve all records frome zone=qname'''
+
+    zone_id = id
     rrset = get_or_404(
         'SELECT * FROM records WHERE qname = %s', (qname,)
     )
