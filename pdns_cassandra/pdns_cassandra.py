@@ -87,13 +87,13 @@ def get_domain_metadata(name, kind):
     return jsonify(result=result)
 
 
-@app.route('/list/<id>/<qname>')
-def list(id,qname):
-    ''' retrieve all records frome zone=qname'''
+@app.route('/list/<id>/<domain_id>')
+def list(id,domain_id):
+    ''' retrieve all records from zone=domain_id '''
 
     zone_id = id
     rrset = get_or_404(
-        'SELECT * FROM records WHERE qname = %s ALLOW FILTERING', (qname,)
+        'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
     )
     return jsonify(result=rrset)
 
