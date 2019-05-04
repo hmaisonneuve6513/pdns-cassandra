@@ -106,7 +106,7 @@ def list(id,domain_id):
     '''
     result = []
     rrset = get_or_404(
-        'SELECT (qtype , qname , content , ttl ) FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
+        'SELECT qtype , qname , content , ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
     )
 
     for record in rrset:
