@@ -32,19 +32,18 @@ def get_or_404(query, *args):
     return result
 
 
-@app.route('/lookup/<qname>/<qtype>')
-def lookup(qname, qtype):
+@app.route('/lookup/<domain_id>/<qtype>')
+def lookup(domain_id, qtype):
     ''' do a basic query '''
 
     rrset = []
     if qtype == 'ANY':
         rrset = get_or_404(
-            'SELECT * FROM records WHERE qname = %s', (qname,)
+            'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
         )
     else:
         rrset = get_or_404(
-            'SELECT * FROM records WHERE qname = %s AND qtype = %s',
-            (qname, qtype)
+            'SELECT * FROM records WHERE  domain_id = %s AND qtype = %s ALLOW FILTERING', (domain_id, qtype,)
         )
     return jsonify(result=rrset)
 
