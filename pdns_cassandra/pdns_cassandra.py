@@ -39,11 +39,11 @@ def lookup(domain_id, qtype):
     rrset = []
     if qtype == 'ANY':
         rrset = get_or_404(
-            'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
+            'SELECT qtype, qname, content, ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
         )
     else:
         rrset = get_or_404(
-            'SELECT * FROM records WHERE  domain_id = %s AND qtype = %s ALLOW FILTERING', (domain_id, qtype,)
+            'SELECT qtype, qname, content, ttl FROM records WHERE  domain_id = %s AND qtype = %s ALLOW FILTERING', (domain_id, qtype,)
         )
     return jsonify(result=rrset)
 
