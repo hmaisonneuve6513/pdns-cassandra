@@ -36,7 +36,9 @@ def get_or_404(query, *args):
 def lookup(domain_id, qtype):
     ''' do a basic query '''
 
+    result = []
     rrset = []
+    record = []
     if qtype == 'ANY':
         rrset = get_or_404(
             'SELECT qtype, qname, content, ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
@@ -45,6 +47,16 @@ def lookup(domain_id, qtype):
         rrset = get_or_404(
             'SELECT qtype, qname, content, ttl FROM records WHERE  domain_id = %s AND qtype = %s ALLOW FILTERING', (domain_id, qtype,)
         )
+
+    for record in rrset:
+        inter = dict (
+            qtype = record['qtype'],
+            qname = record['qname'],
+            content = record['content'],
+            ttl = record['ttl'],
+        )
+        result.append(inter)
+
     return jsonify(result=rrset)
 
 @app.route('/getAllDomains')
