@@ -160,7 +160,7 @@ def replace_rrset(id,qname,qtype):
     print domain_id
     print content
     rows = get_or_404(
-        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, 3600', (domain_id,qname,content,qtype,)
+        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, 3600)', (domain_id,qname,content,qtype,)
     )
 
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
