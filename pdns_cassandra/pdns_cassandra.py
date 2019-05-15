@@ -33,10 +33,7 @@ def get_or_404(query, *args):
 
 def find(query,*args):
     result = db_session.execute(query, *args)
-    if not result:
-        return jsonify(result=null), 200
-    else:
-        return result
+    return result
 
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
