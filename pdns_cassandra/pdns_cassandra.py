@@ -150,7 +150,11 @@ def get_domain_info(zone):
 
 
 @app.route('/replaceRRSet/<id>/<qname>/<qtype>', methods=['PATCH'])
-def replace_rrset(qname,qtype):
+def replace_rrset(id,qname,qtype):
+
+    print id
+    print qname
+    print qtype
     rows = get_or_404(
         'INSERT INTO records (domain_id,qname,content,disabled,qtype,ttl ) VALUES (osnworld.com., %s, 192.168.123.21, 0, %s, 3600', (qname,qtype,)
     )
