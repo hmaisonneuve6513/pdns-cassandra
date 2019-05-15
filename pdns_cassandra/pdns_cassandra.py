@@ -47,7 +47,7 @@ def lookup(qname, qtype):
             'SELECT qtype,qname,content,ttl FROM records WHERE qname LIKE %%s ALLOW FILTERING', (qname,)
         )
     else:
-        rrset = find(
+        rrset = get_or_404(
             'SELECT qtype,qname,content,ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
         )
 
