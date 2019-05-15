@@ -32,8 +32,8 @@ def get_or_404(query, *args):
     return result
 
 
-@app.route('/lookup/<domain_id>/<qtype>')
-def lookup(domain_id, qtype):
+@app.route('/lookup/<qname>/<qtype>')
+def lookup(qname, qtype):
     ''' do a basic query '''
 
     result = []
@@ -41,11 +41,11 @@ def lookup(domain_id, qtype):
     record = []
     if qtype == 'ANY':
         rrset = get_or_404(
-            'SELECT qtype, qname, content, ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
+            'SELECT qtype, qname, content, ttl FROM records WHERE qname LIKE %%s ALLOW FILTERING', (qname,)
         )
     else:
         rrset = get_or_404(
-            'SELECT qtype, qname, content, ttl FROM records WHERE  domain_id = %s AND qtype = %s ALLOW FILTERING', (domain_id, qtype,)
+            'SELECT , qname, content, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
         )
 
     for record in rrset:
