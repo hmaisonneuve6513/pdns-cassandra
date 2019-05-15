@@ -163,8 +163,8 @@ def replace_rrset(id,qname,qtype):
     '''
     rrset = []
     '''
-
-    param_content = request.form.get('rrset[1][content]')
+    print 'recuperation form'
+    param_content = request.form.get('rrset[0][content]')
     print param_content
 
 
