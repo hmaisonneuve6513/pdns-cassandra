@@ -178,7 +178,7 @@ def replace_rrset(id,qname,qtype):
 
 
     result = command(
-        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, 3600)', (domain_id,param_qname,param_content,param_qtype,param_ttl)
+        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s)', (domain_id,param_qname,param_content,param_qtype,param_ttl)
     )
 
     if result:
