@@ -45,7 +45,7 @@ def lookup(qname, qtype):
         )
     else:
         rrset = get_or_404(
-            'SELECT , qname, content, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
+            'SELECT qname,content,ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
         )
 
     for record in rrset:
