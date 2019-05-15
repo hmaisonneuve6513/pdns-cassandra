@@ -60,7 +60,7 @@ def lookup(qname, qtype):
         )
         result.append(inter)
 
-    return jsonify(result=rrset)
+    return jsonify(result=result)
 
 @app.route('/getAllDomains')
 def get_all_domains():
