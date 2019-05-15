@@ -159,6 +159,13 @@ def replace_rrset(id,qname,qtype):
     content = '192.168.123.21'
     print domain_id
     print content
+
+    rrset[]
+
+    param_content = request.args.get('rrset[0]','')
+    print param_content
+
+
     result = command(
         'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, 3600)', (domain_id,qname,content,qtype,)
     )
