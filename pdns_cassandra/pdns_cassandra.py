@@ -172,6 +172,7 @@ def replace_rrset(id,qname,qtype):
     print param_qclass
     print param_qtype
     print param_ttl
+    print ''
 
 
     result = command(
