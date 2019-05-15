@@ -160,9 +160,9 @@ def replace_rrset(id,qname,qtype):
     print domain_id
     print content
 
-    rrset[]
+    rrset = []
 
-    param_content = request.args.get('rrset,'')
+    param_content = request.args.get('rrset[0],'')
     print param_content
 
 
