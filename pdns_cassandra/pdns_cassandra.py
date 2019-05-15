@@ -44,7 +44,7 @@ def lookup(qname, qtype):
     record = []
     if qtype == 'ANY':
         rrset = get_or_404(
-            'SELECT qtype,qname,content,ttl FROM records WHERE qname LIKE %s ALLOW FILTERING', (qname,)
+            'SELECT qtype,qname,content,ttl FROM records WHERE qname = '*'.%s ALLOW FILTERING', (qname,)
         )
     else:
         rrset = get_or_404(
