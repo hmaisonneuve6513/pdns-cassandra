@@ -188,7 +188,7 @@ def create_slave_domain(ip, domain):
 
 
 if __name__ == '__main__':
-    app.config['HOST'] = os.getenv('HOST', '::1')
+    app.config['HOST'] = os.getenv('HOST', '192.168.123.91')
     app.config['PORT'] = os.getenv('HOST', 5000)
     app.config['DEBUG'] = os.getenv('DEBUG', False)
     ''' use your own keyspace in place of osnworld_pdns_backend'''
