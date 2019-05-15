@@ -163,9 +163,10 @@ def replace_rrset(id,qname,qtype):
         'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, 3600)', (domain_id,qname,content,qtype,)
     )
 
-    print result[0]
-
-    return 'true'
+    if result:
+        return 'true'
+    else:
+        return 'false'
 
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
 def super_master_backend(ip, domain):
