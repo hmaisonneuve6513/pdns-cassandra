@@ -31,6 +31,12 @@ def get_or_404(query, *args):
        abort(404)
     return result
 
+def find(query,*args):
+    result = db_session.execute(query, *args)
+    if not result:
+        return jsonify(result=null), 200
+    else:
+        return result
 
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
@@ -44,7 +50,7 @@ def lookup(qname, qtype):
             'SELECT qtype,qname,content,ttl FROM records WHERE qname LIKE %%s ALLOW FILTERING', (qname,)
         )
     else:
-        rrset = get_or_404(
+        rrset = find(
             'SELECT qtype,qname,content,ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
         )
 
