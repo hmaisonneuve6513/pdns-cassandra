@@ -31,7 +31,7 @@ def get_or_404(query, *args):
        abort(404)
     return result
 
-def find(query,*args):
+def command(query,*args):
     result = db_session.execute(query, *args)
     return result
 
@@ -159,11 +159,11 @@ def replace_rrset(id,qname,qtype):
     content = '192.168.123.21'
     print domain_id
     print content
-    rows = get_or_404(
+    result = command(
         'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, 3600)', (domain_id,qname,content,qtype,)
     )
 
-    if rows:
+    if result:
         return True
     else:
         return False
