@@ -165,7 +165,13 @@ def replace_rrset(id,qname,qtype):
     '''
     print 'recuperation form'
     param_content = request.form.get('rrset[0][content]')
+    param_ttl = request.form.get('rrset[0][ttl]')
+    param_qclass = request.form.get('rrset[0][qclass]')
+    param_qtype = request.form.get('rrset[0][qtype]')
     print param_content
+    print param_qclass
+    print param_qtype
+    print param_ttl
 
 
     result = command(
