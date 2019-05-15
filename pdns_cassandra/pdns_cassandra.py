@@ -162,7 +162,7 @@ def replace_rrset(id,qname,qtype):
 
     rrset = []
 
-    param_content = request.args.get('rrset[0][content]')
+    param_content = request.args.get('rrset[0][content]','')
     print param_content
 
 
