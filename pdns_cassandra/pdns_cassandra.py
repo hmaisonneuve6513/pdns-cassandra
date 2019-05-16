@@ -167,7 +167,7 @@ def replace_rrset(id,qname,qtype):
     param_content = request.form.get('rrset[0][content]')
     param_qclass = request.form.get('rrset[0][qclass]')
     param_qname = request.form.get('rrset[0][qname]')
-    param_ttl = request.form.get('rrset[0][ttl]')
+    param_ttl = request.form.get('rrset[0][ttl]', type=int)
     param_qtype = request.form.get('rrset[0][qtype]')
     print param_content
     print param_qclass
