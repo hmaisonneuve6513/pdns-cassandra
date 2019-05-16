@@ -196,7 +196,7 @@ def searchRecords():
     print param_qname
     print ''
 
-    rcname_len = param_qname.len()
+    rcname_len = len(param_qname)
     print rcname_len
 
     result = []
