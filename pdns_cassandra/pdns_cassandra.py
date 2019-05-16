@@ -196,7 +196,8 @@ def searchRecords():
     print param_qname
     print ''
 
-    rcname_len = len(param_qname)
+    rcname_tab = param_qname.split('.')
+    rcname_len = len(rcname_tab)
     print rcname_len
 
     result = []
