@@ -198,9 +198,12 @@ def searchRecords():
 
     recordname = param_qname.split('.')
 
-    print recordname
+    print recordname[0]
+    print recordname[1]
+    print recordname[3]
 
     result = []
+
 
     rrset = get_or_404(
             'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
