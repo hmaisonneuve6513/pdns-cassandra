@@ -193,7 +193,7 @@ def searchRecords():
     rrset = []
     '''
     print 'recuperation parameters'
-    param_max = request.args.get('maxResults')
+    param_max = request.args.get('maxResults',type=int)
     param_qname = request.args.get('pattern')
     print param_max
     print param_qname
