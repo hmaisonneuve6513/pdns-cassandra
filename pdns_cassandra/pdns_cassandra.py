@@ -196,15 +196,10 @@ def searchRecords():
     print param_qname
     print ''
 
-    '''
-            object_type = 'record',
-            zone_id = 1,
-    '''
-
     result = []
 
     rrset = get_or_404(
-        'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE  qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
+        'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE  qname = *%s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
     )
     
     for record in rrset:
