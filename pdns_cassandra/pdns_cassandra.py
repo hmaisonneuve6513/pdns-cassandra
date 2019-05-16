@@ -187,7 +187,7 @@ def replace_rrset(id,qname,qtype):
         return 'false'
 
 @app.route('/searchRecords')
-def searchRecords:
+def searchRecords():
 
     print id
     print qname
