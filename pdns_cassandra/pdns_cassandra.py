@@ -231,6 +231,22 @@ def searchRecords():
 
     return jsonify(result=result)
 
+
+@app.route('/setnotified', methods=['PATCH'])
+def setnotified():
+
+    print 'form data recuperation'
+    param_serial = request.form.get('serial')
+    print param_serial
+
+    '''
+    result = command(
+        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s)', (domain_id,param_qname,param_content,param_qtype,param_ttl)
+    )
+    
+    '''
+    return 'true'
+
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
 def super_master_backend(ip, domain):
     ''' check if we can be a slave for a domain '''
