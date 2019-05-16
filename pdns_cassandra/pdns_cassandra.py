@@ -189,14 +189,6 @@ def replace_rrset(id,qname,qtype):
 @app.route('/searchRecords')
 def searchRecords():
 
-    print id
-    print qname
-    print qtype
-    domain_id = 'osnworld.com.'
-    content = '192.168.123.21'
-    print domain_id
-    print content
-
     '''
     rrset = []
     '''
