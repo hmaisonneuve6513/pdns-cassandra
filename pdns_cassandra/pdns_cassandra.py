@@ -206,7 +206,7 @@ def searchRecords():
         inter = dict (
             content = record['content'],
             disabled = record['disabled'],
-            name = record['qname'],
+            qname = record['qname'],
             object_type = 'record',
             zone_id = 1,
             zone = record['domain_id'],
