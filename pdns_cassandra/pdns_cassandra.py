@@ -196,6 +196,11 @@ def searchRecords():
     print param_qname
     print ''
 
+    '''
+            object_type = 'record',
+            zone_id = 1,
+    '''
+
     result = []
 
     rrset = get_or_404(
@@ -207,8 +212,6 @@ def searchRecords():
             content = record['content'],
             disabled = record['disabled'],
             qname = record['qname'],
-            object_type = 'record',
-            zone_id = 1,
             zone = record['domain_id'],
             qtype = record['qtype'],
             ttl = record['ttl'],
