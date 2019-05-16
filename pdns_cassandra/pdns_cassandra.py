@@ -232,9 +232,10 @@ def searchRecords():
     return jsonify(result=result)
 
 
-@app.route('/setnotified', methods=['PATCH'])
-def setnotified():
+@app.route('/setnotified/<id>', methods=['PATCH'])
+def setnotified(id):
 
+    print id
     print 'form data recuperation'
     param_serial = request.form.get('serial')
     print param_serial
