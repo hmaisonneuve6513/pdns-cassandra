@@ -44,11 +44,11 @@ def lookup(qname, qtype):
     record = []
     if qtype == 'ANY':
         rrset = get_or_404(
-            'SELECT qtype,qname,content,ttl FROM records WHERE qname = %s ALLOW FILTERING', (qname,)
+            'SELECT qtype, qname, content, ttl FROM records WHERE qname = %s ALLOW FILTERING', (qname,)
         )
     else:
         rrset = get_or_404(
-            'SELECT qtype,qname,content,ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
+            'SELECT qtype, qname, content, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
         )
 
     for record in rrset:
@@ -185,6 +185,34 @@ def replace_rrset(id,qname,qtype):
         return 'true'
     else:
         return 'false'
+
+@app.route('/searchRecords')
+def searchRecords:
+
+    print id
+    print qname
+    print qtype
+    domain_id = 'osnworld.com.'
+    content = '192.168.123.21'
+    print domain_id
+    print content
+
+    '''
+    rrset = []
+    '''
+    print 'recuperation parameters'
+    param_max = request.args.get('maxResults')
+    param_qname = request.args.get('pattern')
+    print param_max
+    print param_qname
+    print ''
+
+
+    result = get_or_404(
+        'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE  qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
+    )
+
+    return jsonify(result)
 
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
 def super_master_backend(ip, domain):
