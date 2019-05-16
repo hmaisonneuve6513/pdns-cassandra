@@ -210,7 +210,7 @@ def searchRecords():
             object_type = 'record',
             zone_id = 1,
             zone = record['domain_id'],
-            type = record['qtype'],
+            qtype = record['qtype'],
             ttl = record['ttl'],
         )
         result.append(inter)
