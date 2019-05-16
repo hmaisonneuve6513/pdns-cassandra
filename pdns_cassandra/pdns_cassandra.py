@@ -202,20 +202,18 @@ def searchRecords():
         'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE  qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
     )
 
-    inter = dict (
-        content = record['content'],
-        disabled = record['disabled'],
-        name = record['qname'],
-        object_type = 'record',
-        zone_id = 1,
-        zone = record['domain_id'],
-        type = record['qtype'],
-        ttl = record['ttl'],
-    )
-    result.append(inter)
-
     for record in rrset:
-        result.append(record)
+        inter = dict (
+            content = record['content'],
+            disabled = record['disabled'],
+            name = record['qname'],
+            object_type = 'record',
+            zone_id = 1,
+            zone = record['domain_id'],
+            type = record['qtype'],
+            ttl = record['ttl'],
+        )
+        result.append(inter)
 
     return jsonify(result=result)
 
