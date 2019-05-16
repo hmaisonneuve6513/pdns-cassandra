@@ -208,7 +208,7 @@ def searchRecords():
         name = record['qname'],
         object_type = 'record',
         zone_id = 1,
-        zone = record['domaine_id'],
+        zone = record['domain_id'],
         type = record['qtype'],
         ttl = record['ttl'],
     )
