@@ -206,7 +206,6 @@ def searchRecords():
     rrset = get_or_404(
         'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE  qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
     )
-    '''
     
     for record in rrset:
         inter = dict (
@@ -218,10 +217,6 @@ def searchRecords():
             ttl = record['ttl'],
         )
         result.append(inter)
-    '''
-
-    for record in rrset:
-        result.append(record)
 
     return jsonify(result=result)
 
