@@ -233,7 +233,7 @@ def searchRecords():
 
 
 @app.route('/setnotified', methods=['PATCH'])
-def setnotified:
+def setnotified():
 
     print 'form data recuperation'
     param_serial = request.form.get('serial')
