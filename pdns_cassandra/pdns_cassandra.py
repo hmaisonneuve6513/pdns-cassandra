@@ -196,7 +196,7 @@ def searchRecords():
     print param_qname
     print ''
 
-    recordname = split('.',param_qname)
+    recordname = param_qname.split('.')
 
     print recordname
 
