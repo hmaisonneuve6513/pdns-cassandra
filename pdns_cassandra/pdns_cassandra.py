@@ -245,6 +245,7 @@ def setnotified():
     )
     
     '''
+
     return 'true'
 
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
