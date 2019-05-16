@@ -189,9 +189,6 @@ def replace_rrset(id,qname,qtype):
 @app.route('/searchRecords')
 def searchRecords():
 
-    '''
-    rrset = []
-    '''
     print 'recuperation parameters'
     param_max = request.args.get('maxResults',type=int)
     param_qname = request.args.get('pattern')
@@ -199,12 +196,16 @@ def searchRecords():
     print param_qname
     print ''
 
+    result = []
 
-    result = get_or_404(
+    rrset = get_or_404(
         'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE  qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
     )
 
-    return jsonify(result)
+    for record in rrset:
+        result.append(record)
+
+    return jsonify(result=result)
 
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
 def super_master_backend(ip, domain):
