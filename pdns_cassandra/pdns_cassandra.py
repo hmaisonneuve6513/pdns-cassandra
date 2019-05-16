@@ -198,9 +198,9 @@ def searchRecords():
 
     recordname = param_qname.split('.')
 
+    print recordname.count()
     print recordname[0]
     print recordname[1]
-    print recordname[3]
 
     result = []
 
