@@ -206,7 +206,7 @@ def searchRecords():
 
     result = []
 
-    if rcname_len > 2:
+    if rcname_len == 2:
         rrset = get_or_404(
             'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE domain_id = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
         )
