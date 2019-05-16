@@ -163,7 +163,7 @@ def replace_rrset(id,qname,qtype):
     '''
     rrset = []
     '''
-    print 'recuperation form'
+    print 'form data recuperation'
     param_content = request.form.get('rrset[0][content]')
     param_qclass = request.form.get('rrset[0][qclass]')
     param_qname = request.form.get('rrset[0][qname]')
@@ -189,31 +189,33 @@ def replace_rrset(id,qname,qtype):
 @app.route('/searchRecords')
 def searchRecords():
 
-    print 'recuperation parameters'
+    print 'parameters data recuperation'
     param_max = request.args.get('maxResults',type=int)
     param_qname = request.args.get('pattern')
     print param_max
     print param_qname
     print ''
 
-    recordname = param_qname.split('.')
-
-    rcname_len = len(recordname)
+    rcname_len = param_qname.len()
     print rcname_len
-    print recordname[0]
-    print recordname[1]
-
 
     result = []
 
-    if rcname_len.endswith('.',0,1) or rcname_len == 3 :
-        rrset = get_or_404(
-            'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE domain_id = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
-        )
-    elif rcname_len >= 3:
+    if param_qname.endswith('.',0,1):
+        if rcname_len == 3:
+            rrset = get_or_404(
+                'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE domain_id = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
+            )
+        elif rcname_len >=2:
+            rrset = get_or_404(
+                'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
+            )
+
+    else:
         rrset = get_or_404(
             'SELECT domain_id, qname, content, disabled, qtype, ttl FROM records WHERE qname = %s LIMIT %s ALLOW FILTERING', (param_qname,param_max,)
         )
+
 
     for record in rrset:
         inter = dict (
