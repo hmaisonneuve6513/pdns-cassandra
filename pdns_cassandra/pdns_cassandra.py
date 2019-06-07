@@ -152,8 +152,9 @@ def get_domain_info(zone):
             last_check=0,
         )
     else:
+        kind = 'native'
         add_res = get_even_null(
-            'INSERT INTO domains (zone,kind,masters) VALUES ( %s,'native',['192.168.123.91','192.168.123.92'])', (zone,)
+            'INSERT INTO domains (zone,kind,masters) VALUES ( %s,%s)', (zone,kind)
         )
         rows = get_even_null(
             'SELECT * FROM domains WHERE zone = %s LIMIT 1', (zone,)
