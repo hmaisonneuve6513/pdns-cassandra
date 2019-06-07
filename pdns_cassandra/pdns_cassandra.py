@@ -31,6 +31,11 @@ def get_or_404(query, *args):
        abort(404)
     return result
 
+def get_even_null(query, *args):
+    result = db_session.execute(query, *args)
+    return result
+
+
 def command(query,*args):
     result = db_session.execute(query, *args)
     return result
@@ -132,7 +137,7 @@ def list(id,domain_id):
 @app.route('/getDomainInfo/<zone>')
 def get_domain_info(zone):
     ''' get info for a domain '''
-    rows = get_or_404(
+    rows = get_even_null(
         'SELECT * FROM domains WHERE zone = %s LIMIT 1', (zone,)
     )
     r = rows[0]
