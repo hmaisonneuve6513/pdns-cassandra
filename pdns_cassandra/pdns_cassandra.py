@@ -140,16 +140,20 @@ def get_domain_info(zone):
     rows = get_even_null(
         'SELECT * FROM domains WHERE zone = %s LIMIT 1', (zone,)
     )
-    r = rows[0]
-    result = dict(
-        zone=r['zone'],
-        kind=r['kind'],
-        masters=r['masters'],
-        id=1,
-        serial=1,
-        notified_serial=1,
-        last_check=0,
-    )
+    if rows:
+        r = rows[0]
+        result = dict(
+            zone=r['zone'],
+            kind=r['kind'],
+            masters=r['masters'],
+            id=1,
+            serial=1,
+            notified_serial=1,
+            last_check=0,
+        )
+    else:
+        result = false
+
     return jsonify(result=result)
 
 
