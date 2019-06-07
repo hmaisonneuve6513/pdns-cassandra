@@ -137,7 +137,7 @@ def list(id,domain_id):
 @app.route('/getDomainInfo/<zone>')
 def get_domain_info(zone):
     ''' get info for a domain '''
-    rows = get_even_null(
+    rows = get_or_404(
         'SELECT * FROM domains WHERE zone = %s LIMIT 1', (zone,)
     )
     if rows:
@@ -152,10 +152,7 @@ def get_domain_info(zone):
             last_check=0,
         )
     else:
-        kind = 'native'
-        result = get_even_null(
-            'INSERT INTO domains (zone,kind) VALUES ( %s,%s)', (zone,kind)
-        )
+        result = 'false'
     return jsonify(result=result)
 
 
