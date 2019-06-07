@@ -152,7 +152,7 @@ def get_domain_info(zone):
             last_check=0,
         )
     else:
-        result = false
+        result = 'false'
 
     return jsonify(result=result)
 
