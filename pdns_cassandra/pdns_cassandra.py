@@ -185,7 +185,7 @@ def replace_rrset(id,qname,qtype):
             ordername=r['ordername'],
             priority=r['priority'],
             qtype=r['qtype'],
-            ttl=r['ttl],
+            ttl=r['ttl'],
         )
         print r['domain_id']
         print r['qname']
@@ -201,7 +201,7 @@ def replace_rrset(id,qname,qtype):
 
         insert = get_or_404(
             'INSERT INTO records (domain_id, qname, content, auth, disabled, ordername, priority, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s, %s, %s, %s, %s )',
-            (r['domain_id'], r['qname'], content, r['auth'], r['disabled'], r['ordername'], r['priority'], r['qtype'], r['ttl'])
+            (r['domain_id'], r['qname'], p_content, r['auth'], r['disabled'], r['ordername'], r['priority'], r['qtype'], r['ttl'])
         )
 
         if insert:
