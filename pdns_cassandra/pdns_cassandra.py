@@ -164,7 +164,7 @@ def replace_rrset(id,qname,qtype):
     print id
     print qtype
     print 'Parameter recuperation'
-    rrsets = request.args['rrsets']
+    rrsets = request.args.getlist('rrsets')
 
     for rrset in rrsets:
 
