@@ -294,7 +294,7 @@ def start_transaction(id,zone,number):
     'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (zone,)
     )
 
-    return jsonify(result)
+    return jsonify(result=result)
 
 
 if __name__ == '__main__':
