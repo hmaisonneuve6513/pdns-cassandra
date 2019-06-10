@@ -204,7 +204,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
         print 'select item to destroy:'
         rows = get_or_404(
-            'SELECT * FROM records WHERE  qname = %s and content = %s LIMIT 1', (rrset['qname'], '192.168.123.99', )
+            'SELECT * FROM records WHERE  qname = %s and content = %s ALLOW FILTERING', (rrset['qname'], '192.168.123.99', )
         )
         if rows:
             count = 0
