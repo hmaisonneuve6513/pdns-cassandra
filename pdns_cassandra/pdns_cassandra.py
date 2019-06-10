@@ -287,6 +287,10 @@ def create_slave_domain(ip, domain):
         """, (domain, [ip]))
     return jsonify(result=True)
 
+@app.route('/startTransaction/<id>/<number>', methods=['POST'])
+def startTransction(id,number):
+    return jsonify(True)
+
 
 if __name__ == '__main__':
     app.config['HOST'] = os.getenv('HOST', '192.168.123.91')
