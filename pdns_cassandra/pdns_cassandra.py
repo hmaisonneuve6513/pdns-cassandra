@@ -160,58 +160,61 @@ def get_domain_info(zone):
 @app.route('/replaceRRSet/<id>/<qname>/<qtype>', methods=['PATCH'])
 def replace_rrset(id,qname,qtype):
 
-    print 'form data recuperation'
+    print 'URL information'
     print id
     print qtype
-    p_content = request.args.get('content')
-    p_qname = request.args.get('qname')
-    p_qtype = request.args.get('qtype')
-    p_ttl = request.args.get('ttl')
-    print p_content
-    print p_qname
-    print p_qtype
-    print p_ttl
+    print 'Parameter recuperation'
+    rrsets = request.args('rrsets')
 
-    rows = get_or_404(
-        'SELECT * FROM records WHERE  qname = %s LIMIT 1', (qname,)
-    )
+    for rrset in rrsets:
 
-    if rows:
-        r = rows[0]
-        result = dict(
-            domain_id=r['domain_id'],
-            qname=r['qname'],
-            content=r['content'],
-            auth=r['auth'],
-            disabled=r['disabled'],
-            ordername=r['ordername'],
-            priority=r['priority'],
-            qtype=r['qtype'],
-            ttl=r['ttl'],
+        print rrset['content']
+        print rrset['qname']
+        print rrset['qtype']
+        print rrset['ttl']
+
+        rows = get_or_404(
+            'SELECT * FROM records WHERE  qname = %s LIMIT 1', (rrset['qname'],)
         )
-        print r['domain_id']
-        print r['qname']
-        print r['content']
-        print r['auth']
-        print r['disabled']
-        print r['ordername']
-        print r['priority']
-        print r['qtype']
-        print r['ttl']
+        if rows:
+            count = 0
+            r = rows[0]
+            result = dict(
+                domain_id=r['domain_id'],
+                qname=r['qname'],
+                content=r['content'],
+                auth=r['auth'],
+                disabled=r['disabled'],
+                ordername=r['ordername'],
+                priority=r['priority'],
+                qtype=r['qtype'],
+                ttl=r['ttl'],
+            )
+            print r['domain_id']
+            print r['qname']
+            print r['content']
+            print r['auth']
+            print r['disabled']
+            print r['ordername']
+            print r['priority']
+            print r['qtype']
+            print r['ttl']
 
-        print "New content: " + content
+            print "New content: " + rrset['content']
 
-        insert = get_or_404(
-            'INSERT INTO records (domain_id, qname, content, auth, disabled, ordername, priority, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s, %s, %s, %s, %s )',
-            (r['domain_id'], r['qname'], p_content, r['auth'], r['disabled'], r['ordername'], r['priority'], r['qtype'], r['ttl'])
-        )
-
-        if insert:
-            return'true'
+            insert = get_or_404(
+                'INSERT INTO records (domain_id, qname, content, auth, disabled, ordername, priority, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s, %s, %s, %s, %s )',
+                (r['domain_id'], r['qname'], rrset['content'], r['auth'], r['disabled'], r['ordername'], r['priority'], r['qtype'], r['ttl'])
+            )
+            count += count
+            print count
+            if insert:
+                return'true'
+            else:
+                return 'false'
         else:
             return 'false'
-    else:
-        return 'false'
+    return 'true'
 
 
 @app.route('/searchRecords')
@@ -326,7 +329,7 @@ if __name__ == '__main__':
 
     cassandra_nodes = os.getenv('CASSANDRA_NODES')
     if not cassandra_nodes:
-    	raise SystemExit("CASSANDRA_NODES is not set")
+       raise SystemExit("CASSANDRA_NODES is not set")
     app.config['cassandra_nodes'] = cassandra_nodes.split(',')
 
     cluster = cassandra.cluster.Cluster(app.config['cassandra_nodes'])
