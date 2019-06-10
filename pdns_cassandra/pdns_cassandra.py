@@ -248,10 +248,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
             count += count
             print count
-            if insert:
-                return'true'
-            else:
-                return 'false'
+            return 'true'
         else:
             return 'false'
     return 'true'
