@@ -183,11 +183,13 @@ def replace_rrset(id,qname,qtype):
     out_rrsets = parse_to_rrset(in_rrsets)
     print out_rrsets
 
-    rrsets[0[content]] = '192.0.2.5'
-    rrsets[0[qclass]] = 1
-    rrsets[0[qname]] = 'www.osnworld.net.'
-    rrsets[0[qtype]] = 'A'
-    rrsets[0[ttl]] = 3600
+    rrset[content] = '192.0.2.5'
+    rrset[qclass] = 1
+    rrset[qname] = 'www.osnworld.net.'
+    rrset[qtype] = 'A'
+    rrset[ttl] = 3600
+
+    rrsets[0] = rrset
 
 
     for rrset in rrsets:
