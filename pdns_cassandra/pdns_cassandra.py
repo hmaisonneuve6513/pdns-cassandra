@@ -161,6 +161,8 @@ def get_domain_info(zone):
 def replace_rrset(id,qname,qtype):
 
     print 'form data recuperation'
+    print id
+    print qtype
     p_content = request.args.get('content')
     p_qname = request.args.get('qname')
     p_qtype = request.args.get('qtype')
@@ -171,7 +173,7 @@ def replace_rrset(id,qname,qtype):
     print p_ttl
 
     rows = get_or_404(
-        'SELECT * FROM records WHERE  qname = %s LIMIT 1', (p_qname,)
+        'SELECT * FROM records WHERE  qname = %s LIMIT 1', (qname,)
     )
 
     if rows:
