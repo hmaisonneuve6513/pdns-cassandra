@@ -230,9 +230,10 @@ def replace_rrset(id,qname,qtype):
 
             print "New content: " + rrset['content']
 
-            delete = get_or_404(
+            delete = command(
                 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.99')
             )
+            print delete
 
             insert = get_or_404(
                 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600 )
