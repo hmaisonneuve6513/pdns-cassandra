@@ -160,39 +160,57 @@ def get_domain_info(zone):
 @app.route('/replaceRRSet/<id>/<qname>/<qtype>', methods=['PATCH'])
 def replace_rrset(id,qname,qtype):
 
-    print id
-    print qname
-    print qtype
-    domain_id = 'osnworld.com.'
-    content = '192.168.123.21'
-    print domain_id
-    print content
-
-    '''
-    rrset = []
-    '''
     print 'form data recuperation'
-    param_content = request.form.get('rrset[0][content]')
-    param_qclass = request.form.get('rrset[0][qclass]')
-    param_qname = request.form.get('rrset[0][qname]')
-    param_ttl = request.form.get('rrset[0][ttl]', type=int)
-    param_qtype = request.form.get('rrset[0][qtype]')
-    print param_content
-    print param_qclass
-    print param_qname
-    print param_qtype
-    print param_ttl
-    print ''
+    p_content = request.args.get('content')
+    p_qname = request.args.get('qname')
+    p_qtype = request.args.get('qtype')
+    p_ttl = request.args.get('ttl')
+    print p_content
+    print p_qname
+    print p_qtype
+    print p_ttl
 
-
-    result = command(
-        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s)', (domain_id,param_qname,param_content,param_qtype,param_ttl)
+    rows = get_or_404(
+        'SELECT * FROM records WHERE  qname = %s LIMIT 1', (p_qname,)
     )
 
-    if result:
-        return 'true'
+    if rows:
+        r = rows[0]
+        result = dict(
+            domain_id=r['domain_id'],
+            qname=r['qname'],
+            content=r['content'],
+            auth=r['auth'],
+            disabled=r['disabled'],
+            ordername=r['ordername'],
+            priority=r['priority'],
+            qtype=r['qtype'],
+            ttl=r['ttl],
+        )
+        print r['domain_id']
+        print r['qname']
+        print r['content']
+        print r['auth']
+        print r['disabled']
+        print r['ordername']
+        print r['priority']
+        print r['qtype']
+        print r['ttl']
+
+        print "New content: " + content
+
+        insert = get_or_404(
+            'INSERT INTO records (domain_id, qname, content, auth, disabled, ordername, priority, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s, %s, %s, %s, %s )',
+            (r['domain_id'], r['qname'], content, r['auth'], r['disabled'], r['ordername'], r['priority'], r['qtype'], r['ttl'])
+        )
+
+        if insert:
+            return'true'
+        else:
+            return 'false'
     else:
-        return 'false'
+        result = 'false'
+
 
 @app.route('/searchRecords')
 def searchRecords():
@@ -291,10 +309,10 @@ def create_slave_domain(ip, domain):
 def start_transaction(id,zone,number):
 
     result = get_or_404(
-    'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (zone,)
+        'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (zone,)
     )
 
-    return jsonify(result=result)
+    return 'true'
 
 
 if __name__ == '__main__':
