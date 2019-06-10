@@ -164,13 +164,13 @@ def get_domain_info(zone):
 
 
 
-@app.route('/replaceRRSet/<id>/<qname>/<qtype>', methods=['PATCH'])
-def replace_rrset(id,qname,qtype):
+@app.route('/replaceRRSet/<p_id>/<p_qname>/<p_qtype>', methods=['PATCH'])
+def replace_rrset(p_id,p_qname,p_qtype):
 
     print 'URL information'
-    print id
-    print qname
-    print qtype
+    print p_id
+    print p_qname
+    print p_qtype
     print 'Parameter recuperation'
     '''rrsets = request.args.get()'''
     '''rrsets = request.query_params()'''
@@ -204,7 +204,7 @@ def replace_rrset(id,qname,qtype):
 
         print 'select item to destroy:'
         rows = get_or_404(
-            'SELECT * FROM records WHERE  qname = %s LIMIT 1', (rrset['qname'],)
+            'SELECT * FROM records WHERE  qname = %s and content = %s LIMIT 1', (rrset['qname'], '192.168.123.99', )
         )
         if rows:
             count = 0
@@ -235,14 +235,14 @@ def replace_rrset(id,qname,qtype):
 
             print 'Deleting item:'
             delete = command(
-                'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.99')
+                'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.99', )
             )
             print 'Deleted'
 
             print 'Inserting new Item:'
 
             insert = get_or_404(
-                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600 )
+                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600, )
             )
             count += count
             print count
