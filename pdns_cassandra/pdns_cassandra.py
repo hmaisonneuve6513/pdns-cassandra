@@ -191,7 +191,7 @@ def replace_rrset(id,qname,qtype):
         ttl = 3600,
     )
 
-    rrsets[0] = rrset
+    rrsets = [rrset]
 
 
     for rrset in rrsets:
