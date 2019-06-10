@@ -196,11 +196,13 @@ def replace_rrset(id,qname,qtype):
 
     for rrset in rrsets:
 
+        print 'List rrset content'
         print rrset['content']
         print rrset['qname']
         print rrset['qtype']
         print rrset['ttl']
 
+        print 'select item to destroy:'
         rows = get_or_404(
             'SELECT * FROM records WHERE  qname = %s LIMIT 1', (rrset['qname'],)
         )
@@ -218,6 +220,7 @@ def replace_rrset(id,qname,qtype):
                 qtype=r['qtype'],
                 ttl=r['ttl'],
             )
+            print 'Item found:'
             print r['domain_id']
             print r['qname']
             print r['content']
@@ -230,10 +233,13 @@ def replace_rrset(id,qname,qtype):
 
             print "New content: " + rrset['content']
 
+            print 'Deleting item:'
             delete = command(
                 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.99')
             )
-            print delete
+            print 'Deleted'
+
+            print 'Inserting new Item:'
 
             insert = get_or_404(
                 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600 )
