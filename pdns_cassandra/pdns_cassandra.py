@@ -209,7 +209,7 @@ def replace_rrset(id,qname,qtype):
         else:
             return 'false'
     else:
-        result = 'false'
+        return = 'false'
 
 
 @app.route('/searchRecords')
