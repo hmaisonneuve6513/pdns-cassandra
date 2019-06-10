@@ -238,7 +238,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
             delete = command(
                 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.99', )
             )
-            print 'Deleted' + delete
+            print 'Deleted'
 
             print 'Inserting new Item:'
 
