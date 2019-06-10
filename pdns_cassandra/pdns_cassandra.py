@@ -287,9 +287,14 @@ def create_slave_domain(ip, domain):
         """, (domain, [ip]))
     return jsonify(result=True)
 
-@app.route('/startTransaction/<id>/<number>', methods=['POST'])
-def startTransction(id,number):
-    return jsonify(True)
+@app.route('/startTransaction/<id>/<zone>/<number>', methods=['POST'])
+def start_transaction(id,zone,number):
+
+    result = get_or_404(
+    'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (zone,)
+    )
+
+    return jsonify(result)
 
 
 if __name__ == '__main__':
