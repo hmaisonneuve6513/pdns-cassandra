@@ -177,7 +177,7 @@ def replace_rrset(id,qname,qtype):
     in_rrsets = request.get_data()
     print in_rrsets
 
-    in_rrsets = suppresses_form_header(rrsets)
+    in_rrsets = suppresses_form_header(in_rrsets)
     print in_rrsets
 
     out_rrsets = parse_to_rrset(in_rrsets)
