@@ -231,8 +231,8 @@ def replace_rrset(id,qname,qtype):
             print "New content: " + rrset['content']
 
             insert = get_or_404(
-                'INSERT INTO records (domain_id, qname, content, auth, disabled, ordername, priority, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s, %s, %s, %s, %s )',
-                (r['domain_id'], r['qname'], rrset['content'], r['auth'], r['disabled'], r['ordername'], r['priority'], r['qtype'], r['ttl'])
+                'INSERT INTO records (domain_id, qname, content, auth, disabled, ordername, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s, %s, %s, %s, %s )',
+                (r['domain_id'], r['qname'], rrset['content'], 0, 0, '', r['qtype'], 3600)
             )
             count += count
             print count
