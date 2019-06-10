@@ -27,6 +27,7 @@ def return_404(error):
 
 def get_or_404(query, *args):
     result = db_session.execute(query, *args)
+    print result
     if not result:
        abort(404)
     return result
