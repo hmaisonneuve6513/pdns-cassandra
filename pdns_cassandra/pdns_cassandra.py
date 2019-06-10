@@ -162,11 +162,12 @@ def replace_rrset(id,qname,qtype):
 
     print 'URL information'
     print id
+    print qname
     print qtype
     print 'Parameter recuperation'
     '''rrsets = request.args.get()'''
     '''rrsets = request.query_params()'''
-    rrsets = request.form.getlist('rrset[]')
+    rrsets = request.form.getlist('rrsets[]')
     print rrsets
 
 
