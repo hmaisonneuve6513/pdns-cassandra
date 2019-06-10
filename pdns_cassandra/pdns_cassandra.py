@@ -44,7 +44,7 @@ def suppresses_form_header(stringtocut):
     result = stringtocut[2:]
     return result
 
-def parse_to_rrset(stringtoparse)
+def parse_to_rrset(stringtoparse):
     return stringtoparse
 
 @app.route('/lookup/<qname>/<qtype>')
