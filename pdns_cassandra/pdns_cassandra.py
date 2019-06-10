@@ -242,7 +242,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
             print 'Inserting new Item:'
 
             insert = get_or_404(
-                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s, )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600, )
+                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600, )
             )
             count += count
             print count
