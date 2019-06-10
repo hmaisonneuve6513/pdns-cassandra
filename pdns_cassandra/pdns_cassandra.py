@@ -40,6 +40,10 @@ def command(query,*args):
     result = db_session.execute(query, *args)
     return result
 
+def suppresses_form_header(stringtocut):
+    result = stringtocut[2:]
+    return result
+
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
     ''' do a basic query '''
@@ -167,10 +171,20 @@ def replace_rrset(id,qname,qtype):
     print 'Parameter recuperation'
     '''rrsets = request.args.get()'''
     '''rrsets = request.query_params()'''
-    rrsets = request.form.getlist('rrsets[]')
-    print rrsets
+    in_rrsets = request.get_data()
+    print in_rrsets
 
+    in_rrsets = suppresses_form_header(rrsets)
+    print in_rrsets
 
+    out_rrsets = parse_to_rrset(in_rrsets)
+    print out_rrsets
+
+    rrsets[0][content] = '192.0.2.5'
+    rrsets[0][qclass] = 1
+    rrsets[0][qname] = 'www.osnworld.net.'
+    rrsets[0][qtype] = 'A'
+    rrsets[0][ttl] = 3600
 
 
     for rrset in rrsets:
