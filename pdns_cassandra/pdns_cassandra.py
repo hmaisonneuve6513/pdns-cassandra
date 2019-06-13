@@ -1,5 +1,5 @@
 '''
-Cassandra remote backend for PowerDNS
+Cassandra HTTP remote backend for PowerDNS use python cassandra driver
 '''
 
 '''
@@ -41,12 +41,15 @@ def command(query,*args):
     result = db_session.execute(query, *args)
     return result
 
-def suppresses_form_header(stringtocut):
+def suppress_form_header(stringtocut):
     result = stringtocut[2:]
     return result
 
 def parse_to_rrset(stringtoparse):
-    return stringtoparse
+    parameters = stringtoparse.split("&")
+    for rrset in parameters:
+        print rrset
+    return parameters
 
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
@@ -119,18 +122,6 @@ def list(id,domain_id):
     ''' retrieve all records from zone=domain_id '''
 
     zone_id = id
-
-    '''
-    {"result":[
-        {"qtype":"SOA", "qname":"example.com", "content":"dns1.icann.org. hostmaster.icann.org. 2012081600 7200 3600 1209600 3600", "ttl": 3600},
-        {"qtype":"NS", "qname":"example.com", "content":"ns1.example.com", "ttl": 60},
-        {"qtype":"MX", "qname":"example.com", "content":"10 mx1.example.com.", "ttl": 60},
-        {"qtype":"A", "qname":"www.example.com", "content":"203.0.113.2", "ttl": 60},
-        {"qtype":"A", "qname":"ns1.example.com", "content":"192.0.2.2", "ttl": 60},
-        {"qtype":"A", "qname":"mx1.example.com", "content":"192.0.2.3", "ttl": 60}
-    ]}
-    
-    '''
     result = []
     rrset = get_or_404(
         'SELECT qtype , qname , content , ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
@@ -178,10 +169,12 @@ def replace_rrset(p_id,p_qname,p_qtype):
     in_rrsets = request.get_data()
     print in_rrsets
 
-    in_rrsets = suppresses_form_header(in_rrsets)
+    in_rrsets = suppress_form_header(in_rrsets)
+    print 'After header suppression'
     print in_rrsets
 
     out_rrsets = parse_to_rrset(in_rrsets)
+    print 'After parsing parameters'
     print out_rrsets
 
     rrset = dict (
