@@ -248,7 +248,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
             count += count
             print count
-            return jsonify(result=true), 200
+            return jsonify(result=True), 200
         else:
             return jsonify(result=False), 404
     return 'true'
