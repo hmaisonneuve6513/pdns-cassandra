@@ -51,6 +51,9 @@ def parse_to_rrset(stringtoparse):
     parameters = stringtoparse.split("&")
     for out_rrset in parameters:
         rrset_values.append = out_rrset.split('=')
+        for rrset_value in rrset_values:
+            rrset_m_value = rrset_value.replace("][", "]+[")
+            print rrset_m_value
         print rrset_values
     return parameters
 
