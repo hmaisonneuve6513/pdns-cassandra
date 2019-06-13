@@ -19,6 +19,23 @@ from flask import Flask, jsonify, abort, request
 
 app = Flask(__name__)
 
+class rrset(object):
+
+    def ___init__(self,content,sclass,name,type,ttl):
+        self.content = content
+        self.sclass  = sclass
+        self.name = name
+        self.type = type
+        self.ttl = ttl
+
+    def to_dict(self):
+        data = {}
+        data['content'] = self.content
+        data['sclass'] = self.sclass
+        data['name'] = self.name
+        data['type'] = self.type
+        data['ttl'] = self.ttl
+        return data
 
 @app.errorhandler(404)
 def return_404(error):
@@ -45,16 +62,48 @@ def suppress_form_header(stringtocut):
     result = stringtocut[2:]
     return result
 
+def parse_to_json(stringtoparse)
+
+
+
 def parse_to_rrset(stringtoparse):
     '''rrset_values = []'''
     rrset_inter = []
     rrsets = []
     parameters = stringtoparse.split("&")
+    json_str = parameters.json()
+    print 'jsonifyed parameters' + json_str
+
     for out_rrsets in parameters:
-        out_rrsets = out_rrsets.replace("][", "]+[")
-        out_rrsets_m = out_rrsets.split('+')
+        out_rrsets = out_rrsets.replace("][", "]&&[")
+        out_rrsets_m = out_rrsets.split('&&')
+        index = 0
+        stocked_rrset = ''
+        current_rrset = ''
+        rrset_key_values = []
+
         for rrsets_m in out_rrsets_m:
-            print rrsets_m
+
+            print 'Split to rrset: ' + rrsets_m
+            current_rrset = rrsets_m
+
+            if current_rrset == 'rrset['+index+']':
+
+                print 'rrset index: '+index
+
+                if stocked_rrset != current_rrset:
+                    stocked_rrset = current_rrset
+            else:
+                if 'rrset' in rrsets_m:
+                    if rrsets_m != current_rrset:
+                        index += 1
+                else:
+                    rrsets_m.replace('[','"')
+                    rrsets_m.replace(']','":{')
+                    key_value = rrsets_m.split('=')
+                    print key_value
+
+
     return parameters
 
 @app.route('/lookup/<qname>/<qtype>')
