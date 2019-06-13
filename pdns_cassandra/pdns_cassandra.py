@@ -100,11 +100,12 @@ def parse_to_rrset(stringtoparse):
                 else:
                     print 'add index rrset index: '+ str(index)+''
             else:
-                print 'We are on key value data: '+str(rrsets_m)
+                working_str = str(rrsets_m)
+                print 'We are on key value data: '+working_str
 
-                rrsets_m.replace('[','"')
-                rrsets_m.replace(']','":{')
-                key_value = rrsets_m.split('=')
+                working_str.replace('[','"')
+                working_str.replace(']','":{')
+                key_value = working_str.split('=')
                 print key_value
 
 
