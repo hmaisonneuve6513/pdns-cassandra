@@ -68,7 +68,11 @@ def parse_to_rrset(stringtoparse):
     '''rrset_values = []'''
     rrset_inter = []
     rrsets = []
-    parameters = stringtoparse.split("&")
+
+    additional = 'rrset[1][content]=192.168.123.112&rrset[1][qclass]=1&rrset[1][qname]=ftp.osnworld.net.&rrset[1][qtype]=A&rrset[1][ttl]=3600'
+
+    parameters = stringtoparse+additional
+    parameters = parameters.split("&")
 
     for out_rrsets in parameters:
         out_rrsets = out_rrsets.replace("][", "]&&[")
