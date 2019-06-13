@@ -105,6 +105,7 @@ def parse_to_rrset(stringtoparse):
 
                 working_str.replace('[','"')
                 working_str.replace(']','":{')
+                print working_str
                 key_value = working_str.split('=')
                 print key_value
 
