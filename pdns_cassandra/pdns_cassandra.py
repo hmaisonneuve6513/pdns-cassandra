@@ -74,6 +74,9 @@ def parse_to_rrset(stringtoparse):
     parameters = stringtoparse
     parameters = parameters.split("&")
 
+
+    rrset_key_values = {}
+
     for out_rrsets in parameters:
         out_rrsets = out_rrsets.replace("][", "]&&[")
         out_rrsets_m = out_rrsets.split('&&')
@@ -84,7 +87,6 @@ def parse_to_rrset(stringtoparse):
         index = 0
         stocked_rrset = ''
         current_rrset = ''
-        rrset_key_values = []
 
         for rrsets_m in out_rrsets_m:
 
@@ -100,17 +102,16 @@ def parse_to_rrset(stringtoparse):
                 else:
                     print 'add index rrset index: '+ str(index)+''
             else:
+                working_str = ''
                 working_str = str(rrsets_m)
                 print 'We are on key value data: '+working_str
-
-                working_str.replace("[","\"")
-                working_str.replace("]","\":")
+                working_str = working_str.replace('[','')
+                working_str = working_str.replace(']','')
                 print working_str
                 key_value = working_str.split('=')
                 print key_value
-
-
-    return parameters
+                rrset_key_values[key_value[0]] = key_value[1]
+    return rrset_key_values
 
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
@@ -238,15 +239,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
     print 'After parsing parameters'
     print out_rrsets
 
-    rrset = dict (
-        content = '192.0.2.5',
-        qclass = 1,
-        qname = 'www.osnworld.net.',
-        qtype = 'A',
-        ttl = 3600,
-    )
-
-    rrsets = [rrset]
+    rrsets = [out_rrsets]
 
 
     for rrset in rrsets:
@@ -259,7 +252,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
         print 'select item to destroy:'
         rows = get_or_404(
-            'SELECT * FROM records WHERE  qname = %s and content = %s ALLOW FILTERING', (rrset['qname'], '192.168.123.99', )
+            'SELECT * FROM records WHERE  qname = %s ALLOW FILTERING', (rrset['qname'], )
         )
         if rows:
             count = 0
@@ -290,14 +283,14 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
             print 'Deleting item:'
             delete = command(
-                'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.99', )
+                'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id'], r['qname'], r['content'], )
             )
             print 'Deleted'
 
             print 'Inserting new Item:'
 
             insert = command(
-                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ('osnworld.net.', 'www.osnworld.net.', '192.168.123.100', 'A', 3600 )
+                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'] )
             )
 
             count += count
