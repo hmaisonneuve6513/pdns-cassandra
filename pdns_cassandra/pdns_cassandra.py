@@ -83,7 +83,7 @@ def parse_to_rrset(stringtoparse):
             print 'Split to rrset: ' + rrsets_m
             current_rrset = rrsets_m
 
-            if current_rrset == 'rrset['+index+']':
+            if current_rrset == 'rrset['+str(index)+']':
 
                 print 'rrset index: '+index
 
