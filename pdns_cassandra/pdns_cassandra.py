@@ -77,6 +77,9 @@ def parse_to_rrset(stringtoparse):
     for out_rrsets in parameters:
         out_rrsets = out_rrsets.replace("][", "]&&[")
         out_rrsets_m = out_rrsets.split('&&')
+
+        print 'out_rrsets_m:' + out_rrsets_m
+
         index = 0
         stocked_rrset = ''
         current_rrset = ''
