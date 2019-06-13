@@ -69,9 +69,9 @@ def parse_to_rrset(stringtoparse):
     rrset_inter = []
     rrsets = []
 
-    additional = 'rrset[1][content]=192.168.123.112&rrset[1][qclass]=1&rrset[1][qname]=ftp.osnworld.net.&rrset[1][qtype]=A&rrset[1][ttl]=3600'
+    '''additional = '&2&rrset[1][content]=192.168.123.112&rrset[1][qclass]=1&rrset[1][qname]=ftp.osnworld.net.&rrset[1][qtype]=A&rrset[1][ttl]=3600'
 
-    parameters = stringtoparse+additional
+    parameters = stringtoparse+additional'''
     parameters = parameters.split("&")
 
     for out_rrsets in parameters:
@@ -91,21 +91,21 @@ def parse_to_rrset(stringtoparse):
             print 'Split to rrset: ' + rrsets_m
             current_rrset = rrsets_m
 
-            if current_rrset == 'rrset['+str(index)+']':
+            if 'rrset' in rrsets_m:
+                print 'We are on rrset object: '+str(rrsets_m)
 
-                print 'rrset index: '+ str(index)
+                if current_rrset == 'rrset['+str(index)+']':
+                    print 'continue to parse rrset index: '+ str(index)
 
-                if stocked_rrset != current_rrset:
-                    stocked_rrset = current_rrset
-            else:
-                if 'rrset' in rrsets_m:
-                    if rrsets_m != current_rrset:
-                        index += 1
                 else:
-                    rrsets_m.replace('[','"')
-                    rrsets_m.replace(']','":{')
-                    key_value = rrsets_m.split('=')
-                    print key_value
+                    print 'add index rrset index: '+ str(index)+''
+            else:
+                print 'We are on key value data: '+str(rrsets_m)
+
+                rrsets_m.replace('[','"')
+                rrsets_m.replace(']','":{')
+                key_value = rrsets_m.split('=')
+                print key_value
 
 
     return parameters
