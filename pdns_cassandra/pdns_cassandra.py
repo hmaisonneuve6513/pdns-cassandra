@@ -46,9 +46,12 @@ def suppress_form_header(stringtocut):
     return result
 
 def parse_to_rrset(stringtoparse):
+    rrset_values = []
+    rrsets = []
     parameters = stringtoparse.split("&")
-    for rrset in parameters:
-        print rrset
+    for out_rrset in parameters:
+        rrset_values.append = out_rrset.split('=')
+        print rrset_values
     return parameters
 
 @app.route('/lookup/<qname>/<qtype>')
