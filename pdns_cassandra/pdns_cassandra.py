@@ -47,14 +47,14 @@ def suppress_form_header(stringtocut):
 
 def parse_to_rrset(stringtoparse):
     '''rrset_values = []'''
+    rrset_inter = []
     rrsets = []
     parameters = stringtoparse.split("&")
-    for out_rrset in parameters:
-        rrset_values = out_rrset.split('=')
-        for rrset_value in rrset_values:
-            rrset_m_value = rrset_value.replace("][", "]+[")
-            print rrset_m_value
-        print rrset_values
+    for out_rrsets in parameters:
+        out_rrsets = out_rrsets.replace("][", "]+[")
+        out_rrsets_m = out_rrsets.split('+')
+        for rrsets_m in out_rrsets_m:
+            print rrsets_m
     return parameters
 
 @app.route('/lookup/<qname>/<qtype>')
