@@ -69,8 +69,6 @@ def parse_to_rrset(stringtoparse):
     rrset_inter = []
     rrsets = []
     parameters = stringtoparse.split("&")
-    json_str = parameters.json()
-    print 'jsonifyed parameters' + json_str
 
     for out_rrsets in parameters:
         out_rrsets = out_rrsets.replace("][", "]&&[")
