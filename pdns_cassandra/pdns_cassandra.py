@@ -62,8 +62,6 @@ def suppress_form_header(stringtocut):
     result = stringtocut[2:]
     return result
 
-def parse_to_json(stringtoparse)
-
 
 
 def parse_to_rrset(stringtoparse):
