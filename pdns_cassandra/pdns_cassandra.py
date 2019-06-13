@@ -46,7 +46,7 @@ def suppress_form_header(stringtocut):
     return result
 
 def parse_to_rrset(stringtoparse):
-    rrset_values = []
+    '''rrset_values = []'''
     rrsets = []
     parameters = stringtoparse.split("&")
     for out_rrset in parameters:
