@@ -538,15 +538,17 @@ def commit_transaction( number ):
 
     trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING' , (number) )
 
+    founds = []
+
     for tr in trs:
         inter = dict(
             domain_id=tr['domaine_id'],
             id=tr['id'],
         )
-        results.append(inter)
+        founds.append(inter)
 
-    for result in results
-        delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (result.['domain_id'], result['id'] ) )
+    for found in founds
+        delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (found.['domain_id'], found['id'] ) )
 
     insert = command('INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'COMMITED') )
 
