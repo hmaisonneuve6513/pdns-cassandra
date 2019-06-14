@@ -179,8 +179,8 @@ def list(id,domain_id):
 
 
 
-@app.route('/getbeforeandafternamesabsolute/<id>/<qname>')
-def getbeforeandafternamesabsolute(id, qname):
+@app.route('/getBeforeAndAfterNamesAbsolute/<id>/<qname>')
+def get_before_and_after_names_absolute(id, qname):
 
     in_parameters = request.get_data()
     print 'in parameters :' + in_parameters
@@ -225,6 +225,31 @@ def getbeforeandafternamesabsolute(id, qname):
     return jsonify(result)
 
 
+
+@app.route('/getAllDomainMetadata/<name>')
+def get_domain_metadata(name):
+
+    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s', (name, kind) )
+
+
+
+@app.route('/getDomainMetadata/<name>/<kind>')
+def get_domain_metadata(name, kind):
+
+    ''' get metadata for a domain '''
+
+    result = []
+    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s', (name, kind) )
+
+    for matadata in metatdatas:
+        result.append(rr['content'])
+
+        return jsonify(result=result)
+
+
+
+
+
 @app.route('/getAllDomains')
 def get_all_domains():
 
@@ -235,7 +260,6 @@ def get_all_domains():
 
     for zone in zones:
         inter = dict(
-            id = count,
             zone=zone['zone'],
             kind=zone['kind'],
             masters=zone['masters'],
@@ -246,27 +270,6 @@ def get_all_domains():
         result.append(inter)
 
     return jsonify(result=result)
-
-
-
-
-
-
-
-@app.route('/getDomainMetadata/<name>/<kind>')
-def get_domain_metadata(name, kind):
-
-    ''' get metadata for a domain '''
-
-    result = []
-    rrset = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s', (name, kind) )
-
-    for rr in rrset:
-        result.append(rr['content'])
-
-        return jsonify(result=result)
-
-
 
 
 
