@@ -536,7 +536,7 @@ def start_transaction(id, domain_id, number):
 @app.route('/commitTransaction/<number>', methods=['POST'])
 def commit_transaction( number ):
 
-    trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING' , (number) )
+    trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING', ( number,) )
 
     founds = []
 
