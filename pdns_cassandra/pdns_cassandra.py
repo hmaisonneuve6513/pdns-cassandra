@@ -251,7 +251,7 @@ def get_domain_metadata(name, kind):
 
     for metadata in metadatas:
         inter = dict(
-            content = metadatas['content'],
+            content = metadata['content'],
         )
         result.append(inter)
 
