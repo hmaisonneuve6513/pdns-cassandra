@@ -58,8 +58,8 @@ def command(query,*args):
     result = db_session.execute(query, *args)
     return result
 
-def suppress_form_header(stringtocut):
-    result = stringtocut[2:]
+def suppress_rrset_form_header(rrset_tocut):
+    result = rrset_tocut[2:]
     return result
 
 
