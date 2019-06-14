@@ -229,22 +229,26 @@ def get_before_and_after_names_absolute(id, qname):
 @app.route('/getAllDomainMetadata/<name>')
 def get_all_domain_metadata(name):
 
+    result = []
     metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s ALLOW FILTERING', (name, ) )
-
+    if metadatas:
+        return jsonify(result=metadatas)
+    else:
+        return jsonify(result=False), 404
 
 
 @app.route('/getDomainMetadata/<name>/<kind>')
 def get_domain_metadata(name, kind):
 
-    ''' get metadata for a domain '''
+    ''' get metadata of this kind for this domain name '''
 
     result = []
     metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s ALLOW FILTERING', (name, kind, ) )
 
-    for matadata in metatdatas:
-        result.append(rr['content'])
-
-        return jsonify(result=result)
+    if metadatas:
+        return jsonify(metadatas)
+    else:
+        return jsonify(result=False)
 
 
 
