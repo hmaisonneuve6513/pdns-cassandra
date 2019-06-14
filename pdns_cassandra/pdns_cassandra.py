@@ -259,6 +259,16 @@ def get_domain_metadata(name, kind):
 
 
 
+@app.route('/setDomainMetadata/<name>/<kind>', methods=['PATCH'])
+def get_domain_metadata(name, kind):
+
+    print 'URL information'
+    print name
+    print kind
+    print 'Parameter recuperation'
+    in_metadatas = request.get_data()
+    print in_metadatas
+
 
 
 
@@ -325,7 +335,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
     in_rrsets = request.get_data()
     print in_rrsets
 
-    in_rrsets = suppress_form_header(in_rrsets)
+    in_rrsets = suppress_rrset_form_header(in_rrsets)
     print 'After header suppression'
     print in_rrsets
 
@@ -467,7 +477,6 @@ def setnotified():
 
 
 
-
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
 def super_master_backend(ip, domain):
     ''' check if we can be a slave for a domain '''
@@ -494,22 +503,35 @@ def super_master_backend(ip, domain):
 
 @app.route('/createSlaveDomain/<ip>/<domain>', methods=['PUT'])
 def create_slave_domain(ip, domain):
+
     ''' create a new slave domain '''
+
     db_session.execute(
         """
         INSERT INTO domains (zone, kind, masters)
         VALUES (%s, 'SLAVE', %s)
         """, (domain, [ip]))
+
     return jsonify(result=True)
 
-@app.route('/startTransaction/<id>/<zone>/<number>', methods=['POST'])
-def start_transaction(id,zone,number):
 
-    result = get_or_404(
-        'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (zone,)
-    )
 
-    return jsonify(result)
+
+
+@app.route('/startTransaction/<id>/<domain_id>/<number>', methods=['POST'])
+def start_transaction(id, domain_id, number):
+
+    print id
+    print domain_id
+    print number
+
+
+
+    tr = get_or_404( 'INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'STARTED') )
+    if tr:
+        return jsonify(result=True)
+    else:
+        return jsonify(result=False)
 
 
 
