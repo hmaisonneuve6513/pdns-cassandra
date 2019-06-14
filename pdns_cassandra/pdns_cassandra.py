@@ -260,7 +260,7 @@ def get_domain_metadata(name, kind):
 
 
 @app.route('/setDomainMetadata/<name>/<kind>', methods=['PATCH'])
-def get_domain_metadata(name, kind):
+def set_domain_metadata(name, kind):
 
     print 'URL information'
     print name
@@ -532,12 +532,6 @@ def start_transaction(id, domain_id, number):
         return jsonify(result=True)
     else:
         return jsonify(result=False)
-
-
-
-
-
-
 
 
 
