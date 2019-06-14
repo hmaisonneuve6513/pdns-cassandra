@@ -231,10 +231,14 @@ def get_all_domain_metadata(name):
 
     result = []
     metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s ALLOW FILTERING', (name, ) )
-    if metadatas:
-        return jsonify(result=metadatas)
-    else:
-        return jsonify(result=False), 404
+
+    for metadata in metadatas:
+        inter = dict(
+            content=metadata['content'],
+        )
+        result.append(inter)
+    return jsonify(result=result)
+
 
 
 @app.route('/getDomainMetadata/<name>/<kind>')
@@ -245,10 +249,14 @@ def get_domain_metadata(name, kind):
     result = []
     metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s ALLOW FILTERING', (name, kind, ) )
 
-    if metadatas:
-        return jsonify(metadatas)
-    else:
-        return jsonify(result=False)
+    for metadata in metadatas:
+        inter = dict(
+            content = metadatas['content'],
+        )
+        result.append(inter)
+
+    return jsonify(result=result)
+
 
 
 
