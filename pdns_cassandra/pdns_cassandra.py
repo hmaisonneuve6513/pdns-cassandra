@@ -525,11 +525,12 @@ def start_transaction(id, domain_id, number):
     print domain_id
     print number
 
-    tr = get_or_404( 'INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'STARTED') )
-    if tr:
-        return jsonify(result=True)
-    else:
-        return jsonify(result=False)
+    insert = command('INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'STARTED') )
+
+    print insert
+
+    return jsonify(result=True)
+
 
 
 
