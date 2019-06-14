@@ -525,7 +525,7 @@ def start_transaction(id, domain_id, number):
     print domain_id
     print number
 
-
+    transaction_nb = long(number)
 
     tr = get_or_404( 'INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'STARTED') )
     if tr:
