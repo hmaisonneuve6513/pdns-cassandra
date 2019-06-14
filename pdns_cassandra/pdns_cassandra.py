@@ -527,11 +527,30 @@ def start_transaction(id, domain_id, number):
 
     insert = command('INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'STARTED') )
 
-    print insert
+    print 'start transaction insert result:' + str(insert)
 
     return jsonify(result=True)
 
 
+
+@app.route('/commitTransaction/<number>', methods=['POST'])
+def commit_transaction( number ):
+
+    trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING' , (number) )
+
+    for tr in trs:
+        inter = dict(
+            domain_id=tr['domaine_id'],
+            id=tr['id'],
+        )
+        results.append(inter)
+
+    for result in results
+        delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (result.['domain_id'], result['id'] ) )
+
+    insert = command('INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'COMMITED') )
+
+    return jsonify(result=True)
 
 
 if __name__ == '__main__':
