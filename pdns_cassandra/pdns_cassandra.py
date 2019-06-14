@@ -227,7 +227,7 @@ def get_before_and_after_names_absolute(id, qname):
 
 
 @app.route('/getAllDomainMetadata/<name>')
-def get_domain_metadata(name):
+def get_all_domain_metadata(name):
 
     metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s', (name, kind) )
 
