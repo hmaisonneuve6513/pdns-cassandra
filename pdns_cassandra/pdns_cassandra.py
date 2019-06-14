@@ -547,7 +547,7 @@ def commit_transaction( number ):
         )
         founds.append(inter)
 
-    for found in founds
+    for found in founds:
         delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (found.['domain_id'], found['id'] ) )
 
     insert = command('INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'COMMITED') )
