@@ -113,6 +113,28 @@ def parse_to_rrset(stringtoparse):
                 rrset_key_values[key_value[0]] = key_value[1]
     return rrset_key_values
 
+
+
+
+
+@app.route('/initialize')
+def initialize():
+
+    ''' do a basic query '''
+    result = []
+
+    zones = get_or_404( 'SELECT * FROM  domains ')
+
+    if zones:
+        return jsonify(result=True)
+    else:
+        return jsonify(result=False)
+
+
+
+
+
+
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
     ''' do a basic query '''
@@ -121,13 +143,9 @@ def lookup(qname, qtype):
     rrset = []
     record = []
     if qtype == 'ANY':
-        rrset = get_or_404(
-            'SELECT qtype, qname, content, ttl FROM records WHERE qname = %s ALLOW FILTERING', (qname,)
-        )
+        rrset = get_or_404('SELECT qtype, qname, content, ttl FROM records WHERE qname = %s ALLOW FILTERING', (qname,) )
     else:
-        rrset = get_or_404(
-            'SELECT qtype, qname, content, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,)
-        )
+        rrset = get_or_404('SELECT qtype, qname, content, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,) )
 
     for record in rrset:
         inter = dict (
@@ -140,16 +158,81 @@ def lookup(qname, qtype):
 
     return jsonify(result=result)
 
+
+
+
+
+@app.route('/list/<id>/<domain_id>')
+def list(id,domain_id):
+    ''' retrieve all records from zone=domain_id '''
+
+    zone_id = id
+    result = []
+    rrset = get_or_404('SELECT qtype , qname , content , ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,) )
+
+    for record in rrset:
+        result.append(record)
+
+    return jsonify(result=result)
+
+
+
+
+
+@app.route('/getbeforeandafternamesabsolute/<id>/<qname>')
+def getbeforeandafternamesabsolute(id, qname):
+
+    in_parameters = request.get_data()
+    print 'in parameters :' + in_parameters
+
+    print 'ID : ' + id
+    print 'qname: ' + qname
+
+    if not qname[-1] == '.':
+        qname += '.'
+
+    result = {"before":"","after":""}
+    reached = False
+    passed = False
+    domain_id = ''
+
+    fqdn = qname.split('.')
+    len = len(fqdn)
+    if len >= 2:
+        domain_id = fqdn[len-3] + '.'  + fqdn[len-2] + '.'
+    else:
+        result = {'before':'','after':''}
+
+    print domain_id
+
+    out_qnames = get_or_404('SELECT qname FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,) )
+
+    for out_qname in out_qnames:
+
+        if passed:
+            result['after'] = out_qname['name']
+            passed = False
+        else:
+            current = out_qname
+            if out_qname['name'] == qname:
+                reached = True
+                passed = True
+            elif not reached:
+                result['before'] = out_qname['name']
+
+
+
+    return jsonify(result)
+
+
 @app.route('/getAllDomains')
 def get_all_domains():
+
     ''' get all zones for master server included disabled and slave zones'''
+
     result = []
-    inter = []
-    zones = get_or_404(
-        'SELECT * FROM domains'
-    )
-    count = 1
-    '''{"result":[{"id":1,"zone":"unit.test.","masters":["10.0.0.1"],"notified_serial":2,"serial":2,"last_check":1464693331,"kind":"native"}]}'''
+    zones = get_or_404('SELECT * FROM domains' )
+
     for zone in zones:
         inter = dict(
             id = count,
@@ -161,38 +244,31 @@ def get_all_domains():
             last_check=zone['last_check'],
         )
         result.append(inter)
-        count += count
 
     return jsonify(result=result)
+
+
+
+
+
 
 
 @app.route('/getDomainMetadata/<name>/<kind>')
 def get_domain_metadata(name, kind):
+
     ''' get metadata for a domain '''
+
     result = []
-    rrset = get_or_404(
-        'SELECT content FROM domain_metadata WHERE name = %s and kind = %s',
-        (name, kind)
-    )
+    rrset = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s', (name, kind) )
+
     for rr in rrset:
         result.append(rr['content'])
-    return jsonify(result=result)
+
+        return jsonify(result=result)
 
 
-@app.route('/list/<id>/<domain_id>')
-def list(id,domain_id):
-    ''' retrieve all records from zone=domain_id '''
 
-    zone_id = id
-    result = []
-    rrset = get_or_404(
-        'SELECT qtype , qname , content , ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,)
-    )
 
-    for record in rrset:
-        result.append(record)
-
-    return jsonify(result=result)
 
 
 @app.route('/getDomainInfo/<zone>')
@@ -215,6 +291,9 @@ def get_domain_info(zone):
     else:
         result = 'false'
     return jsonify(result=result)
+
+
+
 
 
 
@@ -301,6 +380,10 @@ def replace_rrset(p_id,p_qname,p_qtype):
     return 'true'
 
 
+
+
+
+
 @app.route('/searchRecords')
 def searchRecords():
 
@@ -347,6 +430,9 @@ def searchRecords():
     return jsonify(result=result)
 
 
+
+
+
 @app.route('/setnotified', methods=['PATCH'])
 def setnotified():
 
@@ -362,6 +448,10 @@ def setnotified():
     '''
 
     return 'true'
+
+
+
+
 
 @app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
 def super_master_backend(ip, domain):
@@ -384,6 +474,9 @@ def super_master_backend(ip, domain):
     abort(404)
 
 
+
+
+
 @app.route('/createSlaveDomain/<ip>/<domain>', methods=['PUT'])
 def create_slave_domain(ip, domain):
     ''' create a new slave domain '''
@@ -401,7 +494,14 @@ def start_transaction(id,zone,number):
         'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING', (zone,)
     )
 
-    return 'true'
+    return jsonify(result)
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
