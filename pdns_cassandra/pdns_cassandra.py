@@ -409,7 +409,7 @@ def ismaster( domain_id, ip ):
     masters = []
     for domain in domains:
         masters = domain['masters']
-        for master in masters
+        for master in masters:
             if master == ip:
                 return jsonify(result=True)
 
