@@ -671,7 +671,7 @@ def calculate_soa_serial( domain_id ):
 
 
 
-@app.route('directBackendCmd', methods=['POST'] )
+@app.route('/directBackendCmd', methods=['POST'] )
 def direct_backend_cmd():
 
     answer = dict(
