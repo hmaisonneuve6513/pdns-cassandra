@@ -133,8 +133,6 @@ def initialize():
 
 
 
-
-
 @app.route('/lookup/<qname>/<qtype>')
 def lookup(qname, qtype):
     ''' do a basic query '''
@@ -161,7 +159,6 @@ def lookup(qname, qtype):
 
 
 
-
 @app.route('/list/<id>/<domain_id>')
 def list(id,domain_id):
     ''' retrieve all records from zone=domain_id '''
@@ -174,7 +171,6 @@ def list(id,domain_id):
         result.append(record)
 
     return jsonify(result=result)
-
 
 
 
@@ -226,6 +222,7 @@ def get_before_and_after_names_absolute(id, qname):
 
 
 
+
 @app.route('/getAllDomainMetadata/<name>')
 def get_all_domain_metadata(name):
 
@@ -241,13 +238,14 @@ def get_all_domain_metadata(name):
 
 
 
-@app.route('/getDomainMetadata/<name>/<kind>')
-def get_domain_metadata(name, kind):
+
+@app.route('/getDomainMetadata/<domain_id>/<kind>')
+def get_domain_metadata( domain_id, kind):
 
     ''' get metadata of this kind for this domain name '''
 
     result = []
-    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s and kind = %s ALLOW FILTERING', (name, kind, ) )
+    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE domain_id = %s and kind = %s ALLOW FILTERING', ( domain_id, kind, ) )
 
     for metadata in metadatas:
         inter = dict(
@@ -259,35 +257,128 @@ def get_domain_metadata(name, kind):
 
 
 
-@app.route('/setDomainMetadata/<name>/<kind>', methods=['PATCH'])
-def set_domain_metadata(name, kind):
+
+@app.route('/setDomainMetadata/<domain_id>/<kind>', methods=['PATCH'])
+def set_domain_metadata(domain_id, kind):
 
     print 'URL information'
-    print name
+    print domain_id
     print kind
     print 'Parameter recuperation'
     in_metadatas = request.get_data()
     print in_metadatas
 
+    inter_array = []
+    val_array = []
+    val = []
+
+    inter_array = in_metadatas.split('&')
+    inter_str = inter_array[0]
+
+    val_array = inter_str.split('=')
+    val.append(val_array[1])
+
+    print 'Deleting Item:'
+    delete = command( 'DELETE FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
+    print 'Deleted'
+
+    print 'Inserting new Item:'
+    insert = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s, )', ( domain_id, kind, val ) )
+    print 'Inserted'
+
+    return jsonify(result=result)
 
 
 
-@app.route('/getAllDomains')
-def get_all_domains():
+@app.route('getDomainKeys/<domain_id>' )
+def get_domain_keys( domain_id ):
 
-    ''' get all zones for master server included disabled and slave zones'''
+    print 'Getting keys for domain : ' + domain_id
+
+    keys = get_or_404('SELECT * FROM cryptokeys WHERE domain_id = %s ALLOW FILTERING' ( domain_id,))
+
+    result=[]
+    for key in keys:
+        inter = dict(
+            domain_id=key['domain_id'],
+            active=key['active'],
+            content=key['content'],
+            flags=key['flags']
+        )
+        result.append(inter)
+
+    return jsonify(result=result)
+
+
+
+@app.route('addDomainKey/<domain_id>', methods=['PUT'] )
+def add_domain_key( domain_id ):
+
+    print domain_id
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('removeDomainKey/<domain_id>/<id>', methods=['DELETE'] )
+def remove_domain_key( domain_id, id ):
+
+    print domain_id
+    print id
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('activateDomainKey/<domain_id>/<id>', methods=['POST'] )
+def activate_domain_key( domain_id, id ):
+
+    print domain_id
+    print id
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('deactivateDomainKey/<domain_id>/<id>', methods=['POST'] )
+def deactivate_domain_key( domain_id, id ):
+
+    print domain_id
+    print id
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('getTSIGKey/<domain_id>' )
+def get_tsig_key( domain_id ):
+
+    print domain_id
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('/getDomainInfo/<domain_id>')
+def get_domain_info(domain_id):
+    ''' get info for a domain '''
+
+    print 'Getting Domain information for domain: ' + domain_id
 
     result = []
-    zones = get_or_404('SELECT * FROM domains' )
 
-    for zone in zones:
+    domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
+    for domain in domains:
         inter = dict(
-            zone=zone['zone'],
-            kind=zone['kind'],
-            masters=zone['masters'],
-            serial=zone['serial'],
-            notified_serial=zone['notified_serial'],
-            last_check=zone['last_check'],
+            id=1,
+            zone=domain['zone'],
+            kind=domain['kind'],
+            serial=domain['serial'],
         )
         result.append(inter)
 
@@ -296,28 +387,75 @@ def get_all_domains():
 
 
 
-@app.route('/getDomainInfo/<zone>')
-def get_domain_info(zone):
-    ''' get info for a domain '''
-    rows = get_or_404(
-        'SELECT * FROM domains WHERE zone = %s LIMIT 1', (zone,)
-    )
-    if rows:
-        r = rows[0]
-        result = dict(
-            zone=r['zone'],
-            kind=r['kind'],
-            masters=r['masters'],
-            id=1,
-            serial=1,
-            notified_serial=1,
-            last_check=0,
-        )
-    else:
-        result = 'false'
-    return jsonify(result=result)
+
+@app.route('setNotified/<id>', methods=['PATCH'] )
+def set_notified( id ):
+
+    print id
+
+    return jsonify(result=True)
 
 
+
+
+@app.route('isMaster/<domain_id>/<ip>' )
+def ismaster( domain_id, ip ):
+
+    print domain_id
+    print ip
+
+    domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
+
+    masters = []
+    for domain in domains:
+        masters = domain['masters']
+        for master in masters
+            if master == ip:
+                return jsonify(result=True)
+
+    return jsonify(result=False)
+
+
+
+@app.route('/superMasterBackend/<ip>/<domain_id>', methods=['POST'])
+def super_master_backend(ip, domain_id):
+
+    print ip
+    print domain_id
+
+    in_rrsets = request.get_data()
+    print in_rrsets
+
+    masters = '['+ip+']'
+    print masters
+
+    ''' First insert new domain '''
+    print 'Inserting new slave Zone:'
+
+    insert = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'Slave', masters ) )
+
+    ''' Second insert rrsets '''
+    print 'Inserting new rrsets'
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('/createSlaveDomain/<ip>/<domain_id>', methods=['PUT'])
+def create_slave_domain(ip, domain_id):
+
+    print ip
+    print domain_id
+
+    masters = '['+ip+']'
+    print masters
+
+    print 'Inserting new slave Zone:'
+
+    insert = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'Slave', masters ) )
+
+    return jsonify(result=True)
 
 
 
@@ -407,6 +545,184 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
 
 
+@app.route('feedRecord/<trx>', methods=['PATCH'] )
+def feed_record( trx ):
+
+    print trx
+
+    ''' Test if trx is present if not create transaction '''
+
+    ''' Get parameters '''
+
+    ''' Loop to insert records'''
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('feedEnts/<id>', methods=['PATCH'] )
+def feed_ents( id ):
+
+    print id
+
+    ''' Test if trx is present if not creat transaction '''
+
+    ''' Get parameters '''
+
+    ''' Loop to insert records'''
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('feedEnts3/<id>', methods=['PATCH'] )
+def feed_ents3( id ):
+
+    print id
+
+    ''' Test if trx is present if not creat transaction '''
+
+    ''' Get parameters '''
+
+    ''' Loop to insert records'''
+
+    return jsonify(result=True)
+
+
+
+
+
+@app.route('/startTransaction/<id>/<domain_id>/<number>', methods=['POST'])
+def start_transaction(id, domain_id, number):
+
+    print id
+    print domain_id
+    print number
+
+    insert = command('INSERT INTO  transactions_data( domain_id, id, state, time ) VALUES ( %s, %s, %s , toTimestamp(now()) )', (domain_id, number, 'STARTED', ) )
+
+    print 'start transaction insert result:' + str(insert)
+
+    return jsonify(result=True)
+
+
+
+@app.route('/commitTransaction/<number>', methods=['POST'])
+def commit_transaction( number ):
+
+    trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING', ( number,) )
+
+    founds = []
+
+    for tr in trs:
+        inter = dict(
+            domain_id=tr['domain_id'],
+            id=tr['id'],
+        )
+        founds.append(inter)
+
+    for found in founds:
+        delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (found['domain_id'], found['id'] ) )
+        insert = command('INSERT INTO transactions_data ( domain_id, id, state, time ) VALUES ( %s, %s, %s, toTimestamp(now()) )', ( found['domain_id'], number, 'COMMITED', ) )
+
+    return jsonify(result=True)
+
+
+
+@app.route('/abortTransaction/<number>', methods=['POST'])
+def abort_transaction( number ):
+
+    trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING', ( number,) )
+
+    founds = []
+
+    for tr in trs:
+        inter = dict(
+            domain_id=tr['domain_id'],
+            id=tr['id'],
+        )
+        founds.append(inter)
+
+    for found in founds:
+        delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (found['domain_id'], found['id'] ) )
+        insert = command('INSERT INTO transactions_data ( domain_id, id, state, time ) VALUES ( %s, %s, %s, toTimestamp(now()) )', ( found['domain_id'], number, 'TO_ABORT', ) )
+
+    return jsonify(result=True)
+
+
+
+
+
+@app.route('calculateSOASerial/<domain_id>', methods=['POST'] )
+def claculate_soa_serial( domain_id ):
+
+    print domain_id
+
+    ''' Test if trx is present if not creat transaction '''
+
+    ''' Get parameters '''
+
+    ''' Loop to insert records'''
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('feedEnts3/<id>', methods=['PATCH'] )
+def feed_ents3( id ):
+
+    print id
+
+    ''' Test if trx is present if not creat transaction '''
+
+    ''' Get parameters '''
+
+    ''' Loop to insert records'''
+
+    return jsonify(result=True)
+
+
+
+
+@app.route('directBackendCmd', methods=['POST'] )
+def direct_backend_cmd():
+
+    answer = dict(
+        result = 'PONG',
+    )
+    return jsonify(result=answer)
+
+
+
+
+
+@app.route('/getAllDomains')
+def get_all_domains():
+
+    ''' get all zones for master server included disabled and slave zones '''
+
+    result = []
+    zones = get_or_404('SELECT * FROM domains' )
+
+    for zone in zones:
+        inter = dict(
+            zone=zone['zone'],
+            kind=zone['kind'],
+            masters=zone['masters'],
+            serial=zone['serial'],
+            notified_serial=zone['notified_serial'],
+            last_check=zone['last_check'],
+        )
+        result.append(inter)
+
+    return jsonify(result=result)
+
+
+
+
 
 
 @app.route('/searchRecords')
@@ -456,102 +772,31 @@ def searchRecords():
 
 
 
+@app.route('/getUpdatedMasters')
+def get_updated_masters():
 
 
-@app.route('/setnotified', methods=['PATCH'])
-def setnotified():
+    ''' Used to find any updates to master zones and finally used to trigger notifications  '''
 
-    print 'form data recuperation'
-    param_serial = request.form.get('serial')
-    print param_serial
+    result = []
+    zones = get_or_404('SELECT * FROM domains' )
 
-    '''
-    result = command(
-        'INSERT INTO records (domain_id, qname, content, disabled, qtype, ttl ) VALUES ( %s, %s, %s, 0, %s, %s)', (domain_id,param_qname,param_content,param_qtype,param_ttl)
-    )
-    
-    '''
-
-    return 'true'
-
-
-
-
-@app.route('/superMasterBackend/<ip>/<domain>', methods=['POST'])
-def super_master_backend(ip, domain):
-    ''' check if we can be a slave for a domain '''
-    for key, value in request.form.items(multi=True):
-        if 'content' in key:
-            rows = db_session.execute(
-                '''
-                SELECT account from supermasters
-                WHERE ip = %s AND nameserver = %s
-                ''',
-                (ip, value)
-            )
-            if not rows:
-                continue
-            #if rows[0]['account'] is None:
-                # remotebackend doesn't like json null
-            #    return jsonify(result=True)
-            return jsonify(result={'account': rows[0]['account']})
-    abort(404)
-
-
-
-
-
-@app.route('/createSlaveDomain/<ip>/<domain>', methods=['PUT'])
-def create_slave_domain(ip, domain):
-
-    ''' create a new slave domain '''
-
-    db_session.execute(
-        """
-        INSERT INTO domains (zone, kind, masters)
-        VALUES (%s, 'SLAVE', %s)
-        """, (domain, [ip]))
-
-    return jsonify(result=True)
-
-
-
-
-
-@app.route('/startTransaction/<id>/<domain_id>/<number>', methods=['POST'])
-def start_transaction(id, domain_id, number):
-
-    print id
-    print domain_id
-    print number
-
-    insert = command('INSERT INTO  transactions_data( domain_id, id, state ) VALUES ( %s, %s, %s ) ', (domain_id, number, 'STARTED', ) )
-
-    print 'start transaction insert result:' + str(insert)
-
-    return jsonify(result=True)
-
-
-
-@app.route('/commitTransaction/<number>', methods=['POST'])
-def commit_transaction( number ):
-
-    trs = command('SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING', ( number,) )
-
-    founds = []
-
-    for tr in trs:
+    for zone in zones:
         inter = dict(
-            domain_id=tr['domain_id'],
-            id=tr['id'],
+            zone=zone['zone'],
+            kind=zone['kind'],
+            masters=zone['masters'],
+            serial=zone['serial'],
+            notified_serial=zone['notified_serial'],
+            last_check=zone['last_check'],
         )
-        founds.append(inter)
+        result.append(inter)
 
-    for found in founds:
-        delete = command('DELETE FROM transactions_data WHERE domain_id = %s and id = %s ', (found['domain_id'], found['id'] ) )
-        insert = command('INSERT INTO transactions_data ( domain_id, id, state ) VALUES ( %s, %s, %s )', ( found['domain_id'], number, 'COMMITED', ) )
+    return jsonify(result=result)
 
-    return jsonify(result=True)
+
+
+
 
 
 if __name__ == '__main__':
