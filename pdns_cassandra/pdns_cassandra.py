@@ -379,9 +379,9 @@ def get_domain_info(domain_id):
         print domain['serial']
         inter = dict(
             id=1,
-            zone=domain['zone'],
             kind=domain['kind'],
             serial=domain['serial'],
+            zone=domain['zone'],
         )
         result.append(inter)
 
