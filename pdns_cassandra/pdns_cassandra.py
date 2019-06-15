@@ -385,7 +385,7 @@ def get_domain_info(domain_id):
         )
         result.append(inter)
 
-    return jsonify(result=result)
+    return jsonify(result=inter)
 
 
 
