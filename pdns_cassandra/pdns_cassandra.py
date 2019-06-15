@@ -290,7 +290,7 @@ def set_domain_metadata(domain_id, kind):
 
 
 
-@app.route('getDomainKeys/<domain_id>' )
+@app.route('/getDomainKeys/<domain_id>' )
 def get_domain_keys( domain_id ):
 
     print 'Getting keys for domain : ' + domain_id
@@ -311,7 +311,7 @@ def get_domain_keys( domain_id ):
 
 
 
-@app.route('addDomainKey/<domain_id>', methods=['PUT'] )
+@app.route('/addDomainKey/<domain_id>', methods=['PUT'] )
 def add_domain_key( domain_id ):
 
     print domain_id
@@ -321,7 +321,7 @@ def add_domain_key( domain_id ):
 
 
 
-@app.route('removeDomainKey/<domain_id>/<id>', methods=['DELETE'] )
+@app.route('/removeDomainKey/<domain_id>/<id>', methods=['DELETE'] )
 def remove_domain_key( domain_id, id ):
 
     print domain_id
@@ -332,7 +332,7 @@ def remove_domain_key( domain_id, id ):
 
 
 
-@app.route('activateDomainKey/<domain_id>/<id>', methods=['POST'] )
+@app.route('/activateDomainKey/<domain_id>/<id>', methods=['POST'] )
 def activate_domain_key( domain_id, id ):
 
     print domain_id
@@ -343,7 +343,7 @@ def activate_domain_key( domain_id, id ):
 
 
 
-@app.route('deactivateDomainKey/<domain_id>/<id>', methods=['POST'] )
+@app.route('/deactivateDomainKey/<domain_id>/<id>', methods=['POST'] )
 def deactivate_domain_key( domain_id, id ):
 
     print domain_id
@@ -354,7 +354,7 @@ def deactivate_domain_key( domain_id, id ):
 
 
 
-@app.route('getTSIGKey/<domain_id>' )
+@app.route('/getTSIGKey/<domain_id>' )
 def get_tsig_key( domain_id ):
 
     print domain_id
@@ -388,7 +388,7 @@ def get_domain_info(domain_id):
 
 
 
-@app.route('setNotified/<id>', methods=['PATCH'] )
+@app.route('/setNotified/<id>', methods=['PATCH'] )
 def set_notified( id ):
 
     print id
@@ -398,7 +398,7 @@ def set_notified( id ):
 
 
 
-@app.route('isMaster/<domain_id>/<ip>' )
+@app.route('/isMaster/<domain_id>/<ip>' )
 def ismaster( domain_id, ip ):
 
     print domain_id
@@ -545,7 +545,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
 
 
-@app.route('feedRecord/<trx>', methods=['PATCH'] )
+@app.route('/feedRecord/<trx>', methods=['PATCH'] )
 def feed_record( trx ):
 
     print trx
@@ -561,7 +561,7 @@ def feed_record( trx ):
 
 
 
-@app.route('feedEnts/<id>', methods=['PATCH'] )
+@app.route('/feedEnts/<id>', methods=['PATCH'] )
 def feed_ents( id ):
 
     print id
@@ -577,7 +577,7 @@ def feed_ents( id ):
 
 
 
-@app.route('feedEnts3/<id>', methods=['PATCH'] )
+@app.route('/feedEnts3/<id>', methods=['PATCH'] )
 def feed_ents3( id ):
 
     print id
@@ -655,26 +655,10 @@ def abort_transaction( number ):
 
 
 
-@app.route('calculateSOASerial/<domain_id>', methods=['POST'] )
-def claculate_soa_serial( domain_id ):
+@app.route('/calculateSOASerial/<domain_id>', methods=['POST'] )
+def calculate_soa_serial( domain_id ):
 
     print domain_id
-
-    ''' Test if trx is present if not creat transaction '''
-
-    ''' Get parameters '''
-
-    ''' Loop to insert records'''
-
-    return jsonify(result=True)
-
-
-
-
-@app.route('feedEnts3/<id>', methods=['PATCH'] )
-def feed_ents3( id ):
-
-    print id
 
     ''' Test if trx is present if not creat transaction '''
 
