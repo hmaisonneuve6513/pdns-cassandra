@@ -374,6 +374,9 @@ def get_domain_info(domain_id):
 
     domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
     for domain in domains:
+        print domain['zone']
+        print domain['kind']
+        print domain['serial']
         inter = dict(
             id=1,
             zone=domain['zone'],
