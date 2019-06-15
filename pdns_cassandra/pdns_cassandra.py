@@ -223,11 +223,11 @@ def get_before_and_after_names_absolute(id, qname):
 
 
 
-@app.route('/getAllDomainMetadata/<name>')
-def get_all_domain_metadata(name):
+@app.route('/getAllDomainMetadata/<domain_id>')
+def get_all_domain_metadata(domain_id):
 
     result = []
-    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE name = %s ALLOW FILTERING', (name, ) )
+    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
 
     for metadata in metadatas:
         inter = dict(
