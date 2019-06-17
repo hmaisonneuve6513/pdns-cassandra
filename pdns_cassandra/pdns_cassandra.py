@@ -311,10 +311,36 @@ def get_domain_keys( domain_id ):
 
 
 
-@app.route('/addDomainKey/<domain_id>', methods=['PUT'] )
+app.route('/addDomainKey/<domain_id>', methods=['PUT'] )
 def add_domain_key( domain_id ):
 
     print domain_id
+
+    in_key_data = request.get_data()
+
+    in_key_data = in_key_data.split('&',2)
+
+    in_flags = in_key_data[0]
+    in_flags = in_flags.split('=',1)
+    in_flags = in_flags[1]
+
+    in_active = in_key_data[1]
+    in_active = in_active.split('=',1)
+    in_active = in_active[1]
+
+    in_content = in_key_data[2]
+    in_content = in_content.split('=',1)
+    in_content = in_content[1]
+
+
+    key_data = dict(
+        domain_id=domain_id,
+        flags=in_flags,
+        active=in_active,
+        content=in_content,
+    )
+
+    insert = command( 'INSERT INTO cryptokeys ( domain_id, content, active, flags ) VALUES ( %s, %s, %s, %s )', ( key_data['domain_id'], key_data['content'] , key_data['active'] , key_data['flags'] ,) )
 
     return jsonify(result=True)
 
@@ -327,6 +353,15 @@ def remove_domain_key( domain_id, id ):
     print domain_id
     print id
 
+    keys = get_or_404('SELECT domain_id, content FROM cryptokeys WHERE domain_id = %s ALLOW FILTERING', ( domain_id, ) )
+
+    count = 0
+    for key in keys:
+        print 'Deleting Item: '+str(count)
+        delete = command( 'DELETE FROM cryptokeys WHERE domain_id = %s and content = %s', ( domain_id, key['content'] , ) )
+        print 'Item deleted'
+        count += 1
+
     return jsonify(result=True)
 
 
@@ -337,6 +372,15 @@ def activate_domain_key( domain_id, id ):
 
     print domain_id
     print id
+
+    keys = get_or_404('SELECT domain_id, content FROM cryptokeys WHERE domain_id = %s ALLOW FILTERING', ( domain_id, ) )
+
+    count = 0
+    for key in keys:
+        print 'Activating Key: '+str(count)
+        insert = command( 'INSERT INTO cryptokeys (domain_id , content, active ) VALUES (%s, %s, %s ) ', ( domain_id, key['content'] , 1) )
+        print 'Key activated'
+        count += 1
 
     return jsonify(result=True)
 
@@ -349,6 +393,15 @@ def deactivate_domain_key( domain_id, id ):
     print domain_id
     print id
 
+    keys = get_or_404('SELECT domain_id, content FROM cryptokeys WHERE domain_id = %s ALLOW FILTERING', ( domain_id, ) )
+
+    count = 0
+    for key in keys:
+        print 'Deactivating Key: '+str(count)
+        delete = command( 'INSERT INTO cryptokeys (domain_id , content, active ) VALUES (%s, %s, %s ) ', ( domain_id, key['content'] , 0) )
+        print 'Key deactivated'
+        count += 1
+
     return jsonify(result=True)
 
 
@@ -359,7 +412,9 @@ def get_tsig_key( domain_id ):
 
     print domain_id
 
-    return jsonify(result=True)
+    tsigkey = get_or_404('SELECT algorithm, secret FROM cryptokeys WHERE name = %s ALLOW FILTERING', ( domain_id, ) )
+
+    return jsonify(result=tsigkey)
 
 
 
@@ -395,6 +450,15 @@ def get_domain_info(domain_id):
 def set_notified( id ):
 
     print id
+    in_serial = request.get_data()
+    in_serial = in_serial.split('=', 1)
+    serial = in_serial[1]
+
+    domains = get_or_404( 'SELECT * FROM domains ALLOW FILTERING', )
+
+    for domain in domains:
+        if not domain['notified_serial'] == 0:
+            insert = command( 'INSERT INTO domains ( domain_id, notified_serial, serial ) VALUES ( %s, %s, %s ) ', ( domain_id, 0 , serial) )
 
     return jsonify(result=True)
 
