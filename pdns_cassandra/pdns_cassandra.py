@@ -113,7 +113,43 @@ def parse_to_rrset(stringtoparse):
                 rrset_key_values[key_value[0]] = key_value[1]
     return rrset_key_values
 
+def parse_to_nssets(in_str):
 
+    print 'Parsing to nssets :'+in_str
+    count = 0
+    index = 0
+
+    in_str = in_str.split('&')
+    in_str_len = len(in_str)
+
+    nsset_array = []
+    nssets = []
+    nsset ={}
+
+    for nsset_property_str in in_str:
+
+        index = count+1
+        if 'nsset['+str(count+1)+']' in nsset_property_str:
+            nsset_property = nsset_property_str.split('=',1)
+            nsset_property[0] = nsset_property[0].replace('nsset['+str(count+1)+'][','')
+            nsset_property[0] = nsset_property[0].replace(']','')
+            prop = nsset_property[0]
+            value = nsset_property[1]
+            nsset[prop] = value
+        else:
+            count += 1
+            nssets.append(nsset)
+            nsset ={}
+            nsset_property = nsset_property_str.split('=',1)
+            nsset_property[0] = nsset_property[0].replace('nsset['+str(count+1)+'][','')
+            nsset_property[0] = nsset_property[0].replace(']','')
+            prop = nsset_property[0]
+            value = nsset_property[1]
+            nsset[prop] = value
+
+    nssets.append(nsset)
+
+    return nssets
 
 
 
@@ -490,8 +526,8 @@ def super_master_backend(ip, domain_id):
     print ip
     print domain_id
 
-    in_rrsets = request.get_data()
-    print in_rrsets
+    in_nssets = request.get_data()
+    print in_nssets
 
     masters = '['+ip+']'
     print masters
@@ -502,7 +538,13 @@ def super_master_backend(ip, domain_id):
     insert = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'Slave', masters ) )
 
     ''' Second insert rrsets '''
-    print 'Inserting new rrsets'
+    print 'Inserting new nssets'
+
+    nssets = parse_to_nssets(in_nssets)
+    for nsset in nssets:
+        insert = command(
+            'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, nsset['qname'], nsset['content'], nsset['qtype'], nsset['ttl'] )
+        )
 
     return jsonify(result=True)
 
