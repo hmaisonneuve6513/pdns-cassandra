@@ -543,7 +543,7 @@ def super_master_backend(ip, domain_id):
     nssets = parse_to_nssets(in_nssets)
     for nsset in nssets:
         insert = command(
-            'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, nsset['qname'], nsset['content'], nsset['qtype'], nsset['ttl'] )
+            'INSERT INTO records (domain_id, qname, content, auth, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, nsset['qname'], nsset['content'], nsset['auth'], nsset['qtype'], nsset['ttl'] )
         )
 
     return jsonify(result=True)
