@@ -151,6 +151,39 @@ def parse_to_nssets(in_str):
 
     return nssets
 
+def parse_to_rr(in_str):
+
+    print in_str
+
+    in_str = in_str.split('&')
+    rrset ={}
+
+    for rrset_property_str in in_str:
+
+        rrset_property = rrset_property_str.split('=',1)
+        rrset_property[0] = rrset_property[0].replace('rr[','')
+        rrset_property[0] = rrset_property[0].replace(']','')
+        prop = rrset_property[0]
+        value = rrset_property[1]
+        rrset[prop] = value
+
+    return rrset
+
+def extract_domain(in_str)
+
+    print in_str
+
+    if in_str.endswith('.'):
+        in_str = in_str[:-1]
+
+    domain_id = ''
+    in_str = in_str.split('.')
+    array_len = len(in_str)
+
+    if array_len >= 2:
+        domain_id = in_str[array_len-2]+'.'+in_str[array_len-1]+'.'
+
+    return domain_id
 
 
 @app.route('/initialize')
@@ -551,18 +584,19 @@ def super_master_backend(ip, domain_id):
 
 
 
-@app.route('/createSlaveDomain/<ip>/<domain_id>', methods=['PUT'])
+@app.route('/createSlaveDomain/<ip>/<domain_id>', methods=['POST'])
 def create_slave_domain(ip, domain_id):
 
     print ip
     print domain_id
 
-    masters = '['+ip+']'
+    masters = []
+    masters.append(ip)
     print masters
 
     print 'Inserting new slave Zone:'
 
-    insert = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'Slave', masters ) )
+    insert = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'SLAVE', masters ) )
 
     return jsonify(result=True)
 
@@ -641,7 +675,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
             print 'Inserting new Item:'
 
             insert = command(
-                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'] )
+                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'], )
             )
 
             count += count
@@ -660,8 +694,18 @@ def feed_record( trx ):
     print trx
 
     ''' Test if trx is present if not create transaction '''
+    transactions = command( 'SELECT * FROM transactions WHERE id = %s ALLOW FILTERING', ( trx, ) )
+
 
     ''' Get parameters '''
+    in_str = request.get_data()
+
+    rr = parse_to_rr(in_str)
+    domain_id = extract_domain(rr['qname'])
+
+    insert = command(
+        'INSERT INTO records (domain_id, qname, content, auth, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s, %s )', ( domain_id, rr['qname'],rr['content'],  rr['auth'], rr['qtype'], rr['ttl'], )
+    )
 
     ''' Loop to insert records'''
 
