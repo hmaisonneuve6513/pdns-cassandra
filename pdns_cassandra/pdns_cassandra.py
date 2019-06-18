@@ -719,11 +719,28 @@ def feed_ents( id ):
 
     print id
 
+    in_str = in_str.split('&')
+    in_str_len = len(in_str)
+
+    nonterm_array = []
+
+    for property_str in in_str:
+
+        property_str = property_str.split('=')
+        nonterm_array.append( property_str[1] )
+
     ''' Test if trx is present if not creat transaction '''
+    nonterm_array_len = len(nonterm_array)
+    if nonterm_array_len > 2:
+        trx = nonterm_array[0]
 
     ''' Get parameters '''
+    first_domain = nonterm_array[nonterm_array_len-1]
+    second_domain = nonterm_array[nonterm_array_len-2]
+    ''' Loop to update domains'''
 
-    ''' Loop to insert records'''
+    print first_domain
+    print second_domain
 
     return jsonify(result=True)
 
