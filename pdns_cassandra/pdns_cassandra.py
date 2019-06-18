@@ -63,6 +63,38 @@ def suppress_rrset_form_header(rrset_tocut):
     return result
 
 
+def split_to_rrsets_array(nb_rrsets, in_str):
+
+    rrsets_array = []
+    rrsets = []
+    count = nb_rrsets
+    while count >=1:
+        sep_str = '&rrset['+str(count-1)+']'
+        if not in_str == '':
+            rrsets_array = in_str.split(sep_str)
+            in_str = rrsets_array[0]
+
+            rrsets_array_len = len(rrsets_array)
+            first_index = rrsets_array_len-5
+
+            if rrsets_array_len >= 5:
+
+                n_rrset = dict(
+                    content = (rrsets_array[first_index].split('='))[1],
+                    qclass = (rrsets_array[first_index+1].split('='))[1],
+                    qname = (rrsets_array[first_index+2].split('='))[1],
+                    qtype = (rrsets_array[first_index+3].split('='))[1],
+                    ttl = int((rrsets_array[first_index+4].split('='))[1]),
+                )
+
+                rrsets.append(n_rrset)
+
+            rrsets_array = rrsets_array.pop(0)
+
+            count -= 1
+        else:
+            break
+    return rrsets
 
 def parse_to_rrset(stringtoparse):
     '''rrset_values = []'''
@@ -616,11 +648,13 @@ def replace_rrset(p_id,p_qname,p_qtype):
     in_rrsets = request.get_data()
     print in_rrsets
 
-    in_rrsets = suppress_rrset_form_header(in_rrsets)
-    print 'After header suppression'
-    print in_rrsets
+    out_params = in_rrsets.split('&',1)
+    nb_rrsets = int(out_params[0])
+    in_params = out_params[1]
+    str_params = '&'+out_params[1]
 
-    out_rrsets = parse_to_rrset(in_rrsets)
+    out_rrsets = split_to_rrsets_array(nb_rrsets,str_params)
+
     print 'After parsing parameters'
     print out_rrsets
 
