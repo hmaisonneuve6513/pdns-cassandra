@@ -16,14 +16,23 @@ The recommended way is to just:
     $ pip install cassandra-driver
     
 
-    CREATE KEYSPACE [your own keyspace name] WITH replication = {
-        'class': 'SimpleStrategy',
-        'replication_factor': '3'
-    };
-
-    USE [your own keyspace];
-
-    CREATE TABLE [your own keyspace name].records (
+    CREATE KEYSPACE <your own keyspace> WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}  AND durable_writes = true;
+    
+    CREATE TABLE <your own keyspace>.cryptokeys (
+        domain_id ascii,
+        content ascii,
+        active int,
+        flags int,
+        PRIMARY KEY (domain_id, content)
+    ) WITH CLUSTERING ORDER BY (content ASC);
+    
+    CREATE TABLE <your own keyspace>.tsigkeys (
+        name ascii PRIMARY KEY,
+        algorithm ascii,
+        secret ascii
+    ) ;
+    
+    CREATE TABLE <your own keyspace>.records (
         domain_id ascii,
         qname ascii,
         content ascii,
@@ -34,9 +43,18 @@ The recommended way is to just:
         qtype ascii,
         ttl int,
         PRIMARY KEY (domain_id, qname, content)
-    );
+    ) WITH CLUSTERING ORDER BY (qname ASC, content ASC)';
     
-    CREATE TABLE [your own keyspace name].domains (
+    CREATE INDEX record_qname ON osnworld_pdns_backend.records (qname);
+    
+    CREATE TABLE <your own keyspace>.supermasters (
+        nameserver ascii,
+        ip ascii,
+        account ascii,
+        PRIMARY KEY (nameserver, ip)
+    ) WITH CLUSTERING ORDER BY (ip ASC);
+    
+    CREATE TABLE <your own keyspace>.domains (
         zone ascii PRIMARY KEY,
         account ascii,
         kind ascii,
@@ -44,36 +62,23 @@ The recommended way is to just:
         masters list<ascii>,
         notified_serial int,
         serial int
-    );
+    ) ;
     
-    CREATE TABLE [your own keyspace name].domain_metadata (
-        name ascii,
+    CREATE TABLE <your own keyspace>.domain_metadata (
+        domain_id ascii,
         kind ascii,
-        content ascii,
-        PRIMARY KEY (name, kind)
-    );
+        content list<ascii>,
+        PRIMARY KEY (domain_id, kind)
+    ) WITH CLUSTERING ORDER BY (kind ASC);
     
-    CREATE TABLE [your own keyspace name].supermasters (
-        nameserver ascii,
-        ip ascii,
-        account ascii,
-        PRIMARY KEY (nameserver, ip)
-    );
-    
-    CREATE TABLE [your own keyspace name].cryptokeys (
-        domain_id ascii PRIMARY KEY,
-        active int,
-        content ascii,
-        flags int
-    );
-
-    CREATE TABLE [your own keyspace name].tsigkeys (
-        name ascii PRIMARY KEY,
-        algorithm ascii,
-        secret ascii
-    );
-    
-    cqlsh:[your own keyspace name]> DESCRIBE tables;
+    CREATE TABLE <your own keyspace>.transactions_data (
+        domain_id ascii,
+        id ascii,
+        sent ascii,
+        state ascii,
+        time timestamp,
+        PRIMARY KEY (domain_id, id)
+    ) WITH CLUSTERING ORDER BY (id ASC);
 
 Configure the PowerDNS remote backend:
 
