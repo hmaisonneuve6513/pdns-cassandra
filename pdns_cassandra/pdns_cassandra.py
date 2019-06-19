@@ -502,26 +502,27 @@ def get_domain_info(domain_id):
 
 
 
-@app.route('/getDomainInfo/<domain_id>/check')
-def check_domain_info(domain_id):
+@app.route('/getDomainInfo/<domain_id>/<extension>')
+def get_extended_domain_action(domain_id, extension):
 
-    print 'Checking Domain Data for domain: ' + domain_id
 
-    result = []
+    if 'check' in extension:
+        print 'Checking Domain Data for domain: ' + domain_id
+        result = []
 
-    domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
-    for domain in domains:
-        print domain['zone']
-        print domain['kind']
-        print domain['serial']
-        inter = dict(
-            id=1,
-            kind=domain['kind'],
-            serial=domain['serial'],
-            zone=domain['zone'],
-        )
-        result.append(inter)
-    return jsonify(result=True)
+        domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
+        for domain in domains:
+            print domain['zone']
+            print domain['kind']
+            print domain['serial']
+            inter = dict(
+                id=1,
+                kind=domain['kind'],
+                serial=domain['serial'],
+                zone=domain['zone'],
+            )
+            result.append(inter)
+        return jsonify(result=True)
 
 
 
