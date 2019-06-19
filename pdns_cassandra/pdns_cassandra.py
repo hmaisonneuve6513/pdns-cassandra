@@ -653,13 +653,10 @@ def replace_rrset(p_id,p_qname,p_qtype):
     in_params = out_params[1]
     str_params = '&'+out_params[1]
 
-    out_rrsets = split_to_rrsets_array(nb_rrsets,str_params)
+    rrsets = split_to_rrsets_array(nb_rrsets,str_params)
 
     print 'After parsing parameters'
-    print out_rrsets
-
-    rrsets = [out_rrsets]
-
+    print rrsets
 
     for rrset in rrsets:
 
