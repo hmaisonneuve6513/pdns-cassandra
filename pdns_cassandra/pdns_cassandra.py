@@ -502,6 +502,28 @@ def get_domain_info(domain_id):
 
 
 
+@app.route('/getDomainInfo/<domain_id>/check')
+def check_domain_info(domain_id):
+    print 'Getting Domain information for domain: ' + domain_id
+
+    result = []
+
+    domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
+    for domain in domains:
+        print domain['zone']
+        print domain['kind']
+        print domain['serial']
+        inter = dict(
+            id=1,
+            kind=domain['kind'],
+            serial=domain['serial'],
+            zone=domain['zone'],
+        )
+        result.append(inter)
+    return jsonify(result=True)
+
+
+
 @app.route('/setNotified/<id>', methods=['PATCH'] )
 def set_notified( id ):
 
