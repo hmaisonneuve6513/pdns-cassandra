@@ -540,12 +540,12 @@ def set_notified( id ):
     print id
     in_serial = request.get_data()
     in_serial = in_serial.split('=', 1)
-    serial = in_serial[1]
+    serial = int(in_serial[1])
 
     domains = get_or_404( 'SELECT * FROM domains ALLOW FILTERING', )
 
     for domain in domains:
-        insert = command( 'INSERT INTO domains ( zone, notified_serial, serial ) VALUES ( %s, %s, %s ) ', ( domain['zone'], 0 , serial) )
+        insert = command( 'INSERT INTO domains ( zone, notified_serial, serial ) VALUES ( %s, %s, %s ) ', ( domain['zone'], serial , serial) )
 
     return jsonify(result=True)
 
