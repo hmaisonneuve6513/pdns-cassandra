@@ -504,7 +504,8 @@ def get_domain_info(domain_id):
 
 @app.route('/getDomainInfo/<domain_id>/check')
 def check_domain_info(domain_id):
-    print 'Getting Domain information for domain: ' + domain_id
+
+    print 'Checking Domain Data for domain: ' + domain_id
 
     result = []
 
