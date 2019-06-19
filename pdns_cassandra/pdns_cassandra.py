@@ -903,13 +903,34 @@ def calculate_soa_serial( domain_id ):
 
     print domain_id
 
-    ''' Test if trx is present if not creat transaction '''
+    ''' in  parameters example'''
+    ''' sd[qname]=unit.test&sd[nameserver]=ns.unit.test&sd[hostmaster]=hostmaster.unit.test&sd[ttl]=300&sd[serial]=1&sd[refresh]=2&sd[retry]=3&sd[expire]=4&sd[default_ttl]=5&sd[domain_id]=-1&sd[scopemask]=0p '''
 
     ''' Get parameters '''
+    in_str = request.get_data()
 
-    ''' Loop to insert records'''
+    in_str = in_str.split('&')
 
-    return jsonify(result=True)
+    sd = {}
+
+    for property_str in in_str:
+        if 'sd[' in property_str:
+            property_str = property_str.replace('sd[','')
+            property_str = property_str.replace(']','')
+            property_str = property_str.split('=')
+            prop = property_str[0]
+            value = property_str[1]
+
+            sd[prop] = value
+
+    serial = sd['serial']
+
+    num_serial = int(serial)
+    num_serial += 1
+
+    sd['serial'] = str(num_serial)
+
+    return jsonify(result=sd['serial'])
 
 
 
@@ -917,10 +938,12 @@ def calculate_soa_serial( domain_id ):
 @app.route('/directBackendCmd', methods=['POST'] )
 def direct_backend_cmd():
 
-    answer = dict(
-        result = 'PONG',
-    )
-    return jsonify(result=answer)
+    in_str = request.get_data()
+
+    print in_str
+
+    ''' TODO '''
+    return jsonify(result=True)
 
 
 
