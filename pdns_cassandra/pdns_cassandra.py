@@ -544,7 +544,8 @@ def set_notified( id ):
     in_serial = request.get_data()
     in_serial = in_serial.split('=', 1)
 
-    in_serial = in_serial.split('%')
+    in_serial = in_serial[1]
+    in_serial = in_serial_str.split('%')
     additional_part = int(in_serial[1])
     print additional_part
 
