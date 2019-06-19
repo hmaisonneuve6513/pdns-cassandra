@@ -723,7 +723,7 @@ def feed_record( trx ):
     print trx
 
     ''' Test if trx is present if not create transaction '''
-    transactions = command( 'SELECT * FROM transactions WHERE id = %s ALLOW FILTERING', ( trx, ) )
+    transactions = command( 'SELECT * FROM transactions_data WHERE id = %s ALLOW FILTERING', ( trx, ) )
 
 
     ''' Get parameters '''
