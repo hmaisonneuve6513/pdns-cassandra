@@ -482,6 +482,7 @@ def get_domain_info(domain_id):
     print 'Getting Domain information for domain: ' + domain_id
 
     result = []
+    inter = {}
 
     domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
     for domain in domains:
@@ -506,10 +507,11 @@ def get_domain_info(domain_id):
 def get_extended_domain_action(domain_id, extension):
 
 
+    result = []
+    inter = {}
+
     if 'check' in extension:
         print 'Checking Domain Data for domain: ' + domain_id
-        result = []
-
         domains = command( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
         for domain in domains:
             print domain['zone']
@@ -524,6 +526,9 @@ def get_extended_domain_action(domain_id, extension):
             result.append(inter)
 
         return jsonify(result=inter)
+    else:
+        return jsonify(result=False)
+
 
 
 
