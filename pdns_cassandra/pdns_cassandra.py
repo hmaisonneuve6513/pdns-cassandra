@@ -547,6 +547,7 @@ def set_notified( id ):
     in_serial = in_serial[1]
     in_serial = in_serial.split('%')
     serial = int(in_serial[0])
+    print serial
     additional_part = float(in_serial[1])
     print additional_part
 
