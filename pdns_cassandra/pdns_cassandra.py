@@ -19,27 +19,15 @@ from flask import Flask, jsonify, abort, request
 
 app = Flask(__name__)
 
-class rrset(object):
 
-    def ___init__(self,content,sclass,name,type,ttl):
-        self.content = content
-        self.sclass  = sclass
-        self.name = name
-        self.type = type
-        self.ttl = ttl
 
-    def to_dict(self):
-        data = {}
-        data['content'] = self.content
-        data['sclass'] = self.sclass
-        data['name'] = self.name
-        data['type'] = self.type
-        data['ttl'] = self.ttl
-        return data
 
 @app.errorhandler(404)
 def return_404(error):
     return jsonify(result=False), 404
+
+
+
 
 
 def get_or_404(query, *args):
@@ -49,21 +37,33 @@ def get_or_404(query, *args):
        abort(404)
     return result
 
+
+
+
+
 def get_even_null(query, *args):
     result = db_session.execute(query, *args)
     return result
+
+
+
 
 
 def command(query,*args):
     result = db_session.execute(query, *args)
     return result
 
+
+
+
 def suppress_rrset_form_header(rrset_tocut):
     result = rrset_tocut[2:]
     return result
 
 
-def split_to_rrsets_array(nb_rrsets, in_str):
+
+
+def parse_to_rrsets(nb_rrsets, in_str):
 
     rrsets_array = []
     rrsets = []
@@ -96,54 +96,9 @@ def split_to_rrsets_array(nb_rrsets, in_str):
             break
     return rrsets
 
-def parse_to_rrset(in_str):
-
-    rrset_inter = []
-    rrsets = []
-
-    '''additional = '&2&rrset[1][content]=192.168.123.112&rrset[1][qclass]=1&rrset[1][qname]=ftp.osnworld.net.&rrset[1][qtype]=A&rrset[1][ttl]=3600' '''
-
-    parameters = in_str
-    parameters = parameters.split("&")
 
 
-    rrset_key_values = {}
 
-    for out_rrsets in parameters:
-        out_rrsets = out_rrsets.replace("][", "]&&[")
-        out_rrsets_m = out_rrsets.split('&&')
-
-        print 'out_rrsets_m:'
-        print out_rrsets_m
-
-        index = 0
-        stocked_rrset = ''
-        current_rrset = ''
-
-        for rrsets_m in out_rrsets_m:
-
-            print 'Split to rrset: ' + rrsets_m
-            current_rrset = rrsets_m
-
-            if 'rrset' in rrsets_m:
-                print 'We are on rrset object: '+str(rrsets_m)
-
-                if current_rrset == 'rrset['+str(index)+']':
-                    print 'continue to parse rrset index: '+ str(index)
-
-                else:
-                    print 'add index rrset index: '+ str(index)+''
-            else:
-                working_str = ''
-                working_str = str(rrsets_m)
-                print 'We are on key value data: '+working_str
-                working_str = working_str.replace('[','')
-                working_str = working_str.replace(']','')
-                print working_str
-                key_value = working_str.split('=')
-                print key_value
-                rrset_key_values[key_value[0]] = key_value[1]
-    return rrset_key_values
 
 def parse_to_nssets(in_str):
 
@@ -653,7 +608,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
     in_params = out_params[1]
     str_params = '&'+out_params[1]
 
-    rrsets = split_to_rrsets_array(nb_rrsets,str_params)
+    rrsets = parse_to_rrsets(nb_rrsets,str_params)
 
     print 'After parsing parameters'
     print rrsets
