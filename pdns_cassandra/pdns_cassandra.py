@@ -155,7 +155,7 @@ def parse_to_rr(in_str):
             value = rrset_property[1]
             rrset[prop] = value
         else:
-            rr_number = rrset_property_str]
+            rr_number = rrset_property_str
 
     return rrset
 
