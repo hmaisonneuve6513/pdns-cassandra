@@ -96,14 +96,14 @@ def split_to_rrsets_array(nb_rrsets, in_str):
             break
     return rrsets
 
-def parse_to_rrset(stringtoparse):
-    '''rrset_values = []'''
+def parse_to_rrset(in_str):
+
     rrset_inter = []
     rrsets = []
 
     '''additional = '&2&rrset[1][content]=192.168.123.112&rrset[1][qclass]=1&rrset[1][qname]=ftp.osnworld.net.&rrset[1][qtype]=A&rrset[1][ttl]=3600' '''
 
-    parameters = stringtoparse
+    parameters = in_str
     parameters = parameters.split("&")
 
 
@@ -201,7 +201,7 @@ def parse_to_rr(in_str):
 
     return rrset
 
-def extract_domain(in_str)
+def extract_domain(in_str):
 
     print in_str
 
@@ -752,43 +752,75 @@ def feed_record( trx ):
 def feed_ents( id ):
 
     print id
+    ''' in  parameters example'''
+    ''' trxid=1370416133&nonterm[]=_udp&nonterm[]=_sip.udp '''
+
+    ''' Get parameters '''
+    in_str = request.get_data()
 
     in_str = in_str.split('&')
     in_str_len = len(in_str)
 
-    nonterm_array = []
+    domain_id= ''
+    properties_array = []
 
     for property_str in in_str:
 
         property_str = property_str.split('=')
-        nonterm_array.append( property_str[1] )
+        if 'trx' in property_str[0]:
+            trx = property_str[1]
+        properties_array.append( property_str[1] )
 
-    ''' Test if trx is present if not creat transaction '''
-    nonterm_array_len = len(nonterm_array)
-    if nonterm_array_len > 2:
-        trx = nonterm_array[0]
+    ''' Test if trx is present if not create transaction '''
 
-    ''' Get parameters '''
-    first_domain = nonterm_array[nonterm_array_len-1]
-    second_domain = nonterm_array[nonterm_array_len-2]
-    ''' Loop to update domains'''
+    properties_array_len = len(properties_array)
 
-    print first_domain
-    print second_domain
+    if properties_array_len > 2:
+        trx = properties_array[0]
+        transactions = command( 'SELECT * FROM transactions_data WHERE id = %s LIMIT 1', ( trx, ) )
+        for transaction in transactions:
+            domain_id = transaction['domain_id']
+        dest_qname = properties_array[nonterm_array_len-1]
+        org_qname = properties_array[nonterm_array_len-2]
 
-    return jsonify(result=True)
+        print dest_qname
+        print org_qname
+
+        ''' Loop to update domains'''
+        if domain_id == '':
+            records = command( 'SELECT * FROM records ALLOW FILTERING' )
+        else:
+            records = command( 'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING' ( domain_id, ) )
+        for record in records:
+            if org_qname in record['qname']:
+                record['qname'] = dest_qname
+                insert = command(
+                    'INSERT INTO records (domain_id, qname, content, auth, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s, %s )', ( record['domain_id'], record['qname'], record['content'],  record['auth'], record['qtype'], record['ttl'], )
+                    )
+
+        return jsonify(result=True)
+    else:
+        return jsonify(result=True)
 
 
 
 
-@app.route('/feedEnts3/<id>', methods=['PATCH'] )
-def feed_ents3( id ):
+@app.route('/feedEnts3/<id>/<domain_id>', methods=['PATCH'] )
+def feed_ents3( id, domain_id ):
 
     print id
+    print domain_id
+
+
+    ''' in  parameters example'''
+    ''' trxid=1370416356&times=1&salt=9642&narrow=0&nonterm[]=_sip._udp&nonterm[]=_udp '''
 
     ''' Test if trx is present if not creat transaction '''
 
     ''' Get parameters '''
+    in_str = request.get_data()
+
+
 
     ''' Loop to insert records'''
 
