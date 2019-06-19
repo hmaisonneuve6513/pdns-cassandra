@@ -523,7 +523,7 @@ def get_extended_domain_action(domain_id, extension):
             )
             result.append(inter)
 
-        return jsonify(result=True)
+        return jsonify(result=inter)
 
 
 
