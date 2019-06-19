@@ -614,7 +614,7 @@ def super_master_backend(ip, domain_id):
 
 
 
-@app.route('/createSlaveDomain/<ip>/<domain_id>', methods=['POST'])
+@app.route('/createSlaveDomain/<ip>/<domain_id>', methods=['PUT'])
 def create_slave_domain(ip, domain_id):
 
     print ip
