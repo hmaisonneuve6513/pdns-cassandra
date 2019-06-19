@@ -551,10 +551,10 @@ def set_notified( id ):
     additional_part = float(in_serial[1])
     print additional_part
 
+    domains = get_or_404( 'SELECT * FROM domains WHERE serial = %s ALLOW FILTERING', ( serial, ))
+
     if additional_part > 0.0:
         serial += 1
-
-    domains = get_or_404( 'SELECT * FROM domains WHERE serial = %s ALLOW FILTERING', ( serial, ))
 
     for domain in domains:
         insert = command( 'INSERT INTO domains ( zone, notified_serial, serial ) VALUES ( %s, %s, %s ) ', ( domain['zone'], serial , serial) )
