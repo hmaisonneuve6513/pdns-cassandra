@@ -545,7 +545,7 @@ def set_notified( id ):
     in_serial = in_serial.split('=', 1)
 
     in_serial = in_serial.split('%')
-    additional_part = int(in_serial[1)
+    additional_part = int(in_serial[1])
     print additional_part
 
     if additional_part > 0.0:
