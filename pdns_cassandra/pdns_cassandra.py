@@ -512,7 +512,9 @@ def get_extended_domain_action(domain_id, extension):
 
     if 'check' in extension:
         print 'Checking Domain Data for domain: ' + domain_id
-        domains = command( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
+
+        domains = get_or_404( 'SELECT * FROM domains WHERE zone = %s LIMIT 1', (domain_id,) )
+
         for domain in domains:
             print domain['zone']
             print domain['kind']
