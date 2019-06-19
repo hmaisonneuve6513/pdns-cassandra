@@ -736,7 +736,7 @@ def feed_record( trx ):
     domain_id = extract_domain(rr['qname'])
 
     insert = command(
-        'INSERT INTO records ( domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s, %s )', ( domain_id, rr['qname'], rr['content'], rr['qtype'], rr['ttl'], )
+        'INSERT INTO records ( domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, rr['qname'], rr['content'], rr['qtype'], rr['ttl'], )
     )
 
     ''' Loop to insert records'''
