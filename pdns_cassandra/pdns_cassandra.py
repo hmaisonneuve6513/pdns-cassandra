@@ -200,15 +200,16 @@ def lookup(qname, qtype):
     rrset = []
     record = []
     if qtype == 'ANY':
-        rrset = get_or_404('SELECT qtype, qname, content, ttl FROM records WHERE qname = %s ALLOW FILTERING', (qname,) )
+        rrset = get_or_404('SELECT qtype, qname, content, auth, ttl FROM records WHERE qname = %s ALLOW FILTERING', (qname,) )
     else:
-        rrset = get_or_404('SELECT qtype, qname, content, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,) )
+        rrset = get_or_404('SELECT qtype, qname, content, auth, ttl FROM records WHERE  qname = %s AND qtype = %s ALLOW FILTERING', (qname, qtype,) )
 
     for record in rrset:
         inter = dict (
             qtype = record['qtype'],
             qname = record['qname'],
             content = record['content'],
+            auth = record['auth'],
             ttl = record['ttl'],
         )
         result.append(inter)
@@ -224,7 +225,7 @@ def list(id,domain_id):
 
     zone_id = id
     result = []
-    rrset = get_or_404('SELECT qtype , qname , content , ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,) )
+    rrset = get_or_404('SELECT qtype, qname, content, auth, ttl FROM records WHERE domain_id = %s ALLOW FILTERING', (domain_id,) )
 
     for record in rrset:
         result.append(record)
