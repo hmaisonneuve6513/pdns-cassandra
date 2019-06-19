@@ -546,11 +546,12 @@ def set_notified( id ):
 
     in_serial = in_serial[1]
     in_serial = in_serial.split('%')
-    additional_part = int(in_serial[1])
+    serial = int(in_serial[0])
+    additional_part = float(in_serial[1])
     print additional_part
 
     if additional_part > 0.0:
-        serial = int(in_serial[0])+1
+        serial += 1
 
     domains = get_or_404( 'SELECT * FROM domains ALLOW FILTERING', )
 
