@@ -145,14 +145,15 @@ def parse_to_rr(in_str):
     in_str = in_str.split('&')
     rrset ={}
 
-    for rrset_property_str in in_str:
-
+    if 'rr' in rrset_property_str:
         rrset_property = rrset_property_str.split('=',1)
         rrset_property[0] = rrset_property[0].replace('rr[','')
         rrset_property[0] = rrset_property[0].replace(']','')
         prop = rrset_property[0]
         value = rrset_property[1]
         rrset[prop] = value
+    else:
+    rr_number = rrset_property[0]
 
     return rrset
 
