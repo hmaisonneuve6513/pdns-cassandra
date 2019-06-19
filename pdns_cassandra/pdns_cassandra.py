@@ -545,8 +545,7 @@ def set_notified( id ):
     domains = get_or_404( 'SELECT * FROM domains ALLOW FILTERING', )
 
     for domain in domains:
-        if not domain['notified_serial'] == 0:
-            insert = command( 'INSERT INTO domains ( domain_id, notified_serial, serial ) VALUES ( %s, %s, %s ) ', ( domain_id, 0 , serial) )
+        insert = command( 'INSERT INTO domains ( zone, notified_serial, serial ) VALUES ( %s, %s, %s ) ', ( domain['zone'], 0 , serial) )
 
     return jsonify(result=True)
 
