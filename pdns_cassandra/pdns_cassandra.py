@@ -713,46 +713,62 @@ def feed_ents( id ):
     in_str = in_str.split('&')
     in_str_len = len(in_str)
 
+    trx = ''
     domain_id= ''
-    properties_array = []
+    properties = {}
+    index = 0
+    prop = ''
+    value = ''
+    non_term = []
 
     for property_str in in_str:
 
+        print 'Index = ' + str(index)
         property_str = property_str.split('=')
+
         if 'trx' in property_str[0]:
-            trx = property_str[1]
-        properties_array.append( property_str[1] )
+            prop = 'trx'
+            value = property_str[1]
 
-    ''' Test if trx is present if not create transaction '''
+            transactions = command( 'SELECT * FROM transactions_data WHERE id = %s LIMIT 1', ( property_str[1], ) )
 
-    properties_array_len = len(properties_array)
+            for transaction in transactions:
+                domain_id = transaction['domain_id']
 
-    if properties_array_len > 2:
-        trx = properties_array[0]
-        transactions = command( 'SELECT * FROM transactions_data WHERE id = %s LIMIT 1', ( trx, ) )
-        for transaction in transactions:
-            domain_id = transaction['domain_id']
-        dest_qname = properties_array[nonterm_array_len-1]
-        org_qname = properties_array[nonterm_array_len-2]
+        elif 'nonterm[]' in property_str[0]:
+            non_term.append(property_str[1])
+            prop = 'nonterm'
+            value = non_term
 
-        print dest_qname
-        print org_qname
+        else:
+            prop = property_str[0]
+            value = property_str[1]
+
+        properties[prop] = value
+
+    print 'Properties :'
+    print properties
+    properties_len = len(properties)
+
+    if properties_len > 2:
 
         ''' Loop to update domains'''
         if domain_id == '':
             records = command( 'SELECT * FROM records ALLOW FILTERING' )
         else:
             records = command( 'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING' ( domain_id, ) )
+
         for record in records:
-            if org_qname in record['qname']:
-                record['qname'] = dest_qname
+            if properties['nonterm'][0] in record['qname']:
+                record['qname'] = properties['nonterm'][1]
                 insert = command(
                     'INSERT INTO records (domain_id, qname, content, auth, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s, %s )', ( record['domain_id'], record['qname'], record['content'],  record['auth'], record['qtype'], record['ttl'], )
                     )
 
         return jsonify(result=True)
+
     else:
-        return jsonify(result=True)
+        return jsonify(result=False)
 
 
 
@@ -763,20 +779,59 @@ def feed_ents3( id, domain_id ):
     print id
     print domain_id
 
-
     ''' in  parameters example'''
     ''' trxid=1370416356&times=1&salt=9642&narrow=0&nonterm[]=_sip._udp&nonterm[]=_udp '''
-
-    ''' Test if trx is present if not creat transaction '''
 
     ''' Get parameters '''
     in_str = request.get_data()
 
+    in_str = in_str.split('&')
+    in_str_len = len(in_str)
 
+    properties = {}
+    index = 0
+    prop = ''
+    value = ''
+    non_term = []
 
-    ''' Loop to insert records'''
+    for property_str in in_str:
 
-    return jsonify(result=True)
+        print 'Index = ' + str(index)
+        property_str = property_str.split('=')
+
+        if 'trx' in property_str[0]:
+            prop = 'trx'
+            value = property_str[1]
+
+        elif 'nonterm[]' in property_str[0]:
+            non_term.append(property_str[1])
+            prop = 'nonterm'
+            value = non_term
+
+        else:
+            prop = property_str[0]
+            value = property_str[1]
+
+        properties[prop] = value
+
+    print 'Properties :'
+    print properties
+    properties_len = len(properties)
+
+    if properties_len > 2:
+
+        records = command( 'SELECT * FROM records WHERE domain_id = %s ALLOW FILTERING' ( domain_id, ) )
+
+        for record in records:
+            if properties['nonterm'][0] in record['qname']:
+                record['qname'] = properties['nonterm'][1]
+                insert = command(
+                    'INSERT INTO records (domain_id, qname, content, auth, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s, %s )', ( record['domain_id'], record['qname'], record['content'],  record['auth'], record['qtype'], record['ttl'], )
+                )
+        return jsonify(result=True)
+
+    else:
+        return jsonify(result=False)
 
 
 
