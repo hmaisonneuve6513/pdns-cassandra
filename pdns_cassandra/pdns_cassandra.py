@@ -712,13 +712,16 @@ def replace_rrset(p_id,p_qname,p_qtype):
                 print 'Deleting item:' + r['qname']
                 delete = command( 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id'], r['qname'], r['content'], ) )
                 print 'Item Deleted'
+
+        print 'Inserting new Item:' + rrset['qname']
+
+        domain_id = extract_domain(rrset['qname'])
+
+        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, rrset['qname'],rrset['content'], rrset['qtype'], rrset['ttl'], ) )
+        if insert:
+            print 'Item inserted :' + rrset['content']
         else:
-            print 'Inserting new Item:' + rrset['qname']
-            insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'], ) )
-            if insert:
-                print 'Item inserted :' + rrset['content']
-            else:
-                print 'Failed to insert Item:'+ rrset['content']
+            print 'Failed to insert Item:'+ rrset['content']
 
     return jsonify( result=True )
 
