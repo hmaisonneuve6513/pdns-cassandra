@@ -293,10 +293,10 @@ def get_all_domain_metadata(domain_id):
 
     result = []
     metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
-    for metadate in metadatas:
-        result.append(metadate)
+    for metadata in metadatas:
+        result.append(metadata)
 
-    return jsonify(result)
+    return jsonify(result=result)
 
 
 
