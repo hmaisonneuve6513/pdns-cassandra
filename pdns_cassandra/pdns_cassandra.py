@@ -307,13 +307,10 @@ def get_domain_metadata( domain_id, kind):
     ''' get metadata of this kind for this domain name '''
 
     result = []
-    metadatas = get_or_404('SELECT content FROM domain_metadata WHERE domain_id = %s and kind = %s ALLOW FILTERING', ( domain_id, kind, ) )
+    metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s and kind = %s ALLOW FILTERING', ( domain_id, kind, ) )
 
     for metadata in metadatas:
-        inter = dict(
-            content = metadata['content'],
-        )
-        result.append(inter)
+        result.append(metadata)
 
     return jsonify(result=result)
 
