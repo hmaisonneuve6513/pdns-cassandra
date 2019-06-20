@@ -716,9 +716,9 @@ def replace_rrset(p_id,p_qname,p_qtype):
             print 'Inserting new Item:' + rrset['qname']
             insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'], ) )
             if insert:
-                print 'Item inserted'
+                print 'Item inserted :' + rrset['content']
             else:
-                print 'Failed to insert Item:'+
+                print 'Failed to insert Item:'+ rrset['content']
 
     return jsonify( result=True )
 
