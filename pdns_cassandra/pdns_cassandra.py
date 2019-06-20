@@ -348,6 +348,37 @@ def set_domain_metadata(domain_id, kind):
 
     return jsonify(result=result)
 
+def set_in_domain_metadata( domain_id, kind, value)
+
+    in_metadatas = value
+    print domain_id
+    print kind
+    print in_metadatas
+
+    inter_array = []
+    val_array = []
+    val = []
+
+    inter_array = in_metadatas.split('&')
+    inter_str = inter_array[0]
+
+    val_array = inter_str.split('=')
+    val.append(val_array[1])
+
+    print 'Check Item presence'
+    check = command( 'SELECT domain_id FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
+
+    if check:
+        print 'Deleting Item:'
+        delete = command( 'DELETE FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
+        print 'Deleted'
+
+    print 'Inserting new Item:'
+    insert = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s, )', ( domain_id, kind, val ) )
+    print 'Inserted'
+
+    return jsonify(result=result)
+
 
 
 @app.route('/getDomainKeys/<domain_id>' )
@@ -630,7 +661,13 @@ def create_slave_domain(ip, domain_id):
 
     print 'Inserting new slave Zone:'
 
-    insert = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'SLAVE', masters ) )
+    insert_to_domains = command( 'INSERT INTO domains (zone, kind, masters ) VALUES ( %s, %s, %s )', ( domain_id, 'SLAVE', masters, ) )
+    insert_to_domain_metadata = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s )', ( domain_id, 'API-RECTIFY', '1', ) )
+    insert_to_domain_metadata = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s )', ( domain_id, 'PRESIGNED', '0', ) )
+    insert_to_domain_metadata = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s )', ( domain_id, 'SOA-EDIT', '0', ) )
+    insert_to_domain_metadata = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s )', ( domain_id, 'SOA-EDIT-API', '0', ) )
+    insert_to_domain_metadata = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s )', ( domain_id, 'NSEC3PARAM', '0', ) )
+
 
     return jsonify(result=True)
 
@@ -645,10 +682,8 @@ def replace_rrset(p_id,p_qname,p_qtype):
     print p_qname
     print p_qtype
     print 'Parameter recuperation'
-    '''rrsets = request.args.get()'''
-    '''rrsets = request.query_params()'''
     in_rrsets = request.get_data()
-    print in_rrsets
+    print 'Parameters data: ' + in_rrsets
 
     out_params = in_rrsets.split('&',1)
     nb_rrsets = int(out_params[0])
@@ -662,61 +697,22 @@ def replace_rrset(p_id,p_qname,p_qtype):
 
     for rrset in rrsets:
 
-        print 'List rrset content'
-        print rrset['content']
-        print rrset['qname']
-        print rrset['qtype']
-        print rrset['ttl']
-
-        print 'select item to destroy:'
-        rows = get_or_404(
-            'SELECT * FROM records WHERE  qname = %s ALLOW FILTERING', (rrset['qname'], )
-        )
+        print 'Check Item presence'
+        rows = command( 'SELECT * FROM records WHERE  qname = %s ALLOW FILTERING', (rrset['qname'], ) )
         if rows:
-            count = 0
-            r = rows[0]
-            result = dict(
-                domain_id=r['domain_id'],
-                qname=r['qname'],
-                content=r['content'],
-                auth=r['auth'],
-                disabled=r['disabled'],
-                ordername=r['ordername'],
-                priority=r['priority'],
-                qtype=r['qtype'],
-                ttl=r['ttl'],
-            )
-            print 'Item found:'
-            print r['domain_id']
-            print r['qname']
-            print r['content']
-            print r['auth']
-            print r['disabled']
-            print r['ordername']
-            print r['priority']
-            print r['qtype']
-            print r['ttl']
-
-            print "New content: " + rrset['content']
-
-            print 'Deleting item:'
-            delete = command(
-                'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id'], r['qname'], r['content'], )
-            )
-            print 'Deleted'
-
-            print 'Inserting new Item:'
-
-            insert = command(
-                'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'], )
-            )
-
-            count += count
-            print count
-            return jsonify(result=True), 200
+            for r in rows:
+                print 'Deleting item:' + r['qname']
+                delete = command( 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id'], r['qname'], r['content'], ) )
+                print 'Item Deleted'
         else:
-            return jsonify(result=False), 404
-    return 'true'
+            print 'Inserting new Item:' + rrset['qname']
+            insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( r['domain_id'], r['qname'],rrset['content'], r['qtype'], r['ttl'], ) )
+            if insert:
+                print 'Item inserted'
+            else:
+                print 'Failed to insert Item:'+
+
+    return jsonify( result=True )
 
 
 
