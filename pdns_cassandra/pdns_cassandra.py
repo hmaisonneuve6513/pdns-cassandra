@@ -713,7 +713,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
         if rs:
             for r in rs:
                 print 'Deleting item:' + r['qname']
-                delete = command( 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id', r['qname'], r['content'] )
+                delete = command( 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id', r['qname'], r['content'], ) )
                 print 'Item Deleted'
         
         print 'Inserting new Item:' + item_to_add['qname']
