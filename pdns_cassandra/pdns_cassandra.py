@@ -63,37 +63,42 @@ def suppress_rrset_form_header(rrset_tocut):
 
 
 
-def parse_to_rrsets(nb_rrsets, in_str):
+def parse_to_rrsets( in_str ):
 
-    rrsets_array = []
+    properties_array = []
     rrsets = []
-    count = nb_rrsets
-    while count >=1:
-        sep_str = '&rrset['+str(count-1)+']'
-        if not in_str == '':
-            rrsets_array = in_str.split(sep_str)
-            in_str = rrsets_array[0]
+    rrset = {}
 
-            rrsets_array_len = len(rrsets_array)
-            first_index = rrsets_array_len-5
+    if not in_str == '':
+        sep_str = in_str[:9]
+        lit_index = sep_str.split('[')[1][0]
+        first_index = int(lit_index)
+        current_index = first_index
 
-            if rrsets_array_len >= 5:
+        in_str = in_str[2:]
+        properties_array = in_str.split('&')
 
-                n_rrset = dict(
-                    content = (rrsets_array[first_index].split('='))[1],
-                    qclass = (rrsets_array[first_index+1].split('='))[1],
-                    qname = (rrsets_array[first_index+2].split('='))[1],
-                    qtype = (rrsets_array[first_index+3].split('='))[1],
-                    ttl = int((rrsets_array[first_index+4].split('='))[1]),
-                )
+        for rr_property in properties_array:
 
-                rrsets.append(n_rrset)
+            rr_property = rr_property.replace('][', '&')
+            rr_property = rr_property.replace('rrset[','')
+            rr_property = rr_property.replace(']','')
+            get_index = rr_property.split('&',1)[0]
+            parsing_index = int(get_index)
+            if parsing_index > current_index:
+                rrsets.append(rrset)
+                current_index = parsing_index
+                rrset = {}
 
-            rrsets_array = rrsets_array.pop(0)
+            rr_property = rr_property[2:]
+            propval_array = rr_property.split('=')
+            prop = propval_array[0]
+            value = propval_array[1]
 
-            count -= 1
-        else:
-            break
+            rrset[prop] = value
+
+        rrsets.append(rrset)
+
     return rrsets
 
 
@@ -685,44 +690,48 @@ def create_slave_domain(ip, domain_id):
 @app.route('/replaceRRSet/<p_id>/<p_qname>/<p_qtype>', methods=['PATCH'])
 def replace_rrset(p_id,p_qname,p_qtype):
 
-    print 'URL information'
-    print p_id
-    print p_qname
-    print p_qtype
-    print 'Parameter recuperation'
-    in_rrsets = request.get_data()
-    print 'Parameters data: ' + in_rrsets
+    print 'Getting parameters'
+    in_params = request.get_data()
+    print 'Parameters data: ' + in_params
 
-    out_params = in_rrsets.split('&',1)
-    nb_rrsets = int(out_params[0])
-    in_params = out_params[1]
-    str_params = '&'+out_params[1]
-
-    rrsets = parse_to_rrsets(nb_rrsets,str_params)
+    rrsets = parse_to_rrsets( in_params )
 
     print 'After parsing parameters'
     print rrsets
-
-    for rrset in rrsets:
-
+    
+    nb_rrsets = len(rrsets)
+    
+    item_to_delete = {}
+    item_to_insert = {}
+    
+    if nb_rrsets > 1:
+        item_to_delete = rrset[0]
+        item_to_add = rrset[1]
+        
         print 'Check Item presence'
-        rows = command( 'SELECT * FROM records WHERE  qname = %s ALLOW FILTERING', (rrset['qname'], ) )
-        if rows:
-            for r in rows:
+        rs = command( 'SELECT * FROM records WHERE  qname = %s ALLOW FILTERING', (item_to_delete['qname'], ) )
+        if rs:
+            for r in rs:
                 print 'Deleting item:' + r['qname']
-                delete = command( 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s', ( r['domain_id'], r['qname'], r['content'], ) )
+                delete = command( 'DELETE FROM records WHERE domain_id = %s and qname = %s and content = %s' )
                 print 'Item Deleted'
-
-        print 'Inserting new Item:' + rrset['qname']
-
-        domain_id = extract_domain(rrset['qname'])
-
-        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, rrset['qname'],rrset['content'], rrset['qtype'], rrset['ttl'], ) )
+        
+        print 'Inserting new Item:' + item_to_add['qname']
+        domain_id = extract_domain(item_to_add['qname'])
+        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], item_to_add['ttl'], ) )
         if insert:
-            print 'Item inserted :' + rrset['content']
+            print 'Item inserted :' + item_to_add['qname']
         else:
-            print 'Failed to insert Item:'+ rrset['content']
-
+            print 'Failed to insert Item:'+ item_to_add['qname']
+    else:
+        item_to_add = rrset[0]
+        print 'Inserting new Item:' + item_to_add['qname']
+        domain_id = extract_domain(item_to_add['qname'])
+        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], item_to_add['ttl'], ) )
+        if insert:
+            print 'Item inserted :' + item_to_add['qname']
+        else:
+            print 'Failed to insert Item:'+ item_to_add['qname']
     return jsonify( result=True )
 
 
