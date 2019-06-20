@@ -718,7 +718,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
         
         print 'Inserting new Item:' + item_to_add['qname']
         domain_id = extract_domain(item_to_add['qname'])
-        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], item_to_add['ttl'], ) )
+        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], int(item_to_add['ttl']), ) )
         if insert:
             print 'Item inserted :' + item_to_add['qname']
         else:
@@ -727,7 +727,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
         item_to_add = rrsets[0]
         print 'Inserting new Item:' + item_to_add['qname']
         domain_id = extract_domain(item_to_add['qname'])
-        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], item_to_add['ttl'], ) )
+        insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], int(item_to_add['ttl']), ) )
         if insert:
             print 'Item inserted :' + item_to_add['qname']
         else:
