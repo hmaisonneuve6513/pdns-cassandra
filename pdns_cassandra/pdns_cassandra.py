@@ -338,17 +338,25 @@ def set_domain_metadata(domain_id, kind):
     val_array = inter_str.split('=')
     val.append(val_array[1])
 
-    print 'Deleting Item:'
-    delete = command( 'DELETE FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
-    print 'Deleted'
+    print 'Check Item presence'
+    check = command( 'SELECT domain_id FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
+
+    if check:
+        print 'Deleting Item:'
+        delete = command( 'DELETE FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
+        print 'Deleted'
 
     print 'Inserting new Item:'
     insert = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s, )', ( domain_id, kind, val ) )
-    print 'Inserted'
+    print 'Item inserted'
 
-    return jsonify(result=result)
+    return jsonify(result=True)
 
-def set_in_domain_metadata( domain_id, kind, value)
+
+
+
+
+def set_in_domain_metadata( domain_id, kind, value):
 
     in_metadatas = value
     print domain_id
@@ -375,9 +383,9 @@ def set_in_domain_metadata( domain_id, kind, value)
 
     print 'Inserting new Item:'
     insert = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s, )', ( domain_id, kind, val ) )
-    print 'Inserted'
+    print 'Item inserted'
 
-    return jsonify(result=result)
+    return jsonify(result=True)
 
 
 
