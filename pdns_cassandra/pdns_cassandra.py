@@ -705,8 +705,8 @@ def replace_rrset(p_id,p_qname,p_qtype):
     item_to_insert = {}
     
     if nb_rrsets > 1:
-        item_to_delete = rrset[0]
-        item_to_add = rrset[1]
+        item_to_delete = rrsets[0]
+        item_to_add = rrsets[1]
         
         print 'Check Item presence'
         rs = command( 'SELECT * FROM records WHERE  qname = %s ALLOW FILTERING', (item_to_delete['qname'], ) )
@@ -724,7 +724,7 @@ def replace_rrset(p_id,p_qname,p_qtype):
         else:
             print 'Failed to insert Item:'+ item_to_add['qname']
     else:
-        item_to_add = rrset[0]
+        item_to_add = rrsets[0]
         print 'Inserting new Item:' + item_to_add['qname']
         domain_id = extract_domain(item_to_add['qname'])
         insert = command( 'INSERT INTO records (domain_id, qname, content, qtype, ttl ) VALUES ( %s, %s, %s, %s, %s )', ( domain_id, item_to_add['qname'], item_to_add['content'], item_to_add['qtype'], item_to_add['ttl'], ) )
