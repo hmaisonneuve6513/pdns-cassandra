@@ -295,10 +295,6 @@ def get_all_domain_metadata(domain_id):
     inter = {}
 
     for metadata in metadatas:
-        #inter = dict (
-        #    kind=metadata['kind'],
-        #    content=metadata['content'],
-        #)
         prop = metadata['kind']
         value = metadata['content']
         inter[prop] = value
