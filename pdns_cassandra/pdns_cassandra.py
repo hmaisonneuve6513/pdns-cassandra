@@ -299,7 +299,7 @@ def get_all_domain_metadata(domain_id):
         #    kind=metadata['kind'],
         #    content=metadata['content'],
         #)
-        inter = metadata['kind']+'[] ='+metadata['content']
+        inter = metadata['kind']+'[0]='+metadata['content']
 
         result.append(inter)
 
