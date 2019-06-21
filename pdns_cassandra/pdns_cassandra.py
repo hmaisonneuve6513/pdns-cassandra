@@ -291,9 +291,9 @@ def get_before_and_after_names_absolute(id, qname):
 def get_all_domain_metadata(domain_id):
 
     result = []
-    inter = {}
     metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
     for meta in metadatas:
+        inter = {}
         prop = meta['kind']
         print 'Prop : '+prop
         value = meta['content']
