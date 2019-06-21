@@ -293,13 +293,13 @@ def get_all_domain_metadata(domain_id):
     result = []
     metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
     for meta in metadatas:
-        #inter = {}
+        inter = []
         prop = meta['kind']
         print 'Prop : '+prop
         value = meta['content']
         print 'Value : '+ value
         #inter[prop] = value
-        inter = '&'+prop+'[]='+value
+        inter.append(prop,value)
         print inter
         result.append(inter)
         print result
