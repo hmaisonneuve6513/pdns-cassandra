@@ -292,16 +292,16 @@ def get_all_domain_metadata(domain_id):
 
     result = []
     metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
-
+    inter = ''
     for metadata in metadatas:
         #inter = dict (
         #    kind=metadata['kind'],
         #    content=metadata['content'],
         #)
-        inter = '&'+metadata['kind']+'[]='+metadata['content']
+        inter = '&'+metadata['kind']+'[]='+metadata['content']+inter
 
-        result.append(inter)
 
+    result.append(inter)
     return jsonify(result=result)
 
 
