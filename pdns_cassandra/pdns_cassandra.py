@@ -299,7 +299,7 @@ def get_all_domain_metadata(domain_id):
         value = meta['content']
         print 'Value : '+ value
         #inter[prop] = value
-        inter = value
+        inter = prop
         print inter
         result.append(inter)
         print result
