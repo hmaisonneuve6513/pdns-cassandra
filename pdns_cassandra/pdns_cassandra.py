@@ -344,11 +344,14 @@ def set_domain_metadata(domain_id, kind):
     inter_array = []
     val_array = []
 
-    inter_array = in_metadatas.split('&')
-    inter_str = inter_array[0]
+    if not in_metadatas == '':
+        inter_array = in_metadatas.split('&')
+        inter_str = inter_array[0]
 
-    val_array = inter_str.split('=')
-    val = unquote(val_array[1])
+        val_array = inter_str.split('=')
+        val = unquote(val_array[1])
+    else:
+        val = '0'
 
     print 'Check Item presence'
     check = command( 'SELECT domain_id FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
