@@ -349,7 +349,7 @@ def set_domain_metadata(domain_id, kind):
         print 'Deleted'
 
     print 'Inserting new Item:'
-    insert = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s, )', ( domain_id, kind, val ) )
+    insert = command( 'INSERT INTO domain_metadata (domain_id, kind, content ) VALUES ( %s, %s, %s )', ( domain_id, kind, val, ) )
     print 'Item inserted'
 
     return jsonify(result=True)
