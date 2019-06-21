@@ -291,13 +291,13 @@ def get_before_and_after_names_absolute(id, qname):
 def get_all_domain_metadata(domain_id):
 
     result = []
-    metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
     inter = {}
-
-    for metadata in metadatas:
-        prop = metadata['kind']
-        value = metadata['content']
+    metadatas = get_or_404('SELECT kind, content FROM domain_metadata WHERE domain_id = %s ALLOW FILTERING', (domain_id, ) )
+    for meta in metadatas:
+        prop = meta['kind']
+        value = meta['content']
         inter[prop] = value
+
         result.append(inter)
 
     return jsonify(result=result)
