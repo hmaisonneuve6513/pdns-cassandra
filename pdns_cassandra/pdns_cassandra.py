@@ -343,7 +343,7 @@ def set_domain_metadata(domain_id, kind):
     print 'Check Item presence'
     check = command( 'SELECT domain_id FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
 
-    if check:
+    if check and not kind == 'ALLOW-AXFR-FROM':
         print 'Deleting Item:'
         delete = command( 'DELETE FROM domain_metadata WHERE domain_id = %s and kind = %s', ( domain_id, kind, ) )
         print 'Deleted'
