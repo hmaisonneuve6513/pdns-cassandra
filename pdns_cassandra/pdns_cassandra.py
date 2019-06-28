@@ -650,7 +650,8 @@ def super_master_backend(ip, domain_id):
     in_nssets = request.get_data()
     print in_nssets
 
-    masters = '['+ip+']'
+    masters = []
+    masters.append(ip)
     print masters
 
     ''' First insert new domain '''
