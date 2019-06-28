@@ -119,8 +119,6 @@ def parse_to_nssets(in_str):
 
         if not record == '':
             p = re.compile(r'nsset\[\d+\]')
-            record_item = p.match(record)
-            record_item = record_item.group()
             record_no_item = p.sub('',record)
 
             in_record_properties = record_no_item.split('&')
