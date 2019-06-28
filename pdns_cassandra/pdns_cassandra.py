@@ -106,41 +106,42 @@ def parse_to_rrsets( in_str ):
 
 def parse_to_nssets(in_str):
 
-    print 'Parsing to nssets :'+in_str
+    import re
+    print 'Parsing to nssets :'+ in_str
     count = 0
     index = 0
-
-    in_str = in_str.split('&')
-    in_str_len = len(in_str)
-
-    nsset_array = []
     nssets = []
-    nsset ={}
 
-    for nsset_property_str in in_str:
+    records = in_str.split('&1&')
+    nb_records = len(records)
 
-        index = count+1
-        if 'nsset['+str(count+1)+']' in nsset_property_str:
-            nsset_property = nsset_property_str.split('=',1)
-            nsset_property[0] = nsset_property[0].replace('nsset['+str(count+1)+'][','')
-            nsset_property[0] = nsset_property[0].replace(']','')
-            prop = nsset_property[0]
-            value = nsset_property[1]
-            nsset[prop] = value
-        else:
-            count += 1
-            nssets.append(nsset)
+    for record in records:
+
+        if not record == '':
+            p = re.compile(r'nsset\[\d+\]')
+            record_item = p.match(record)
+            record_item = record_item.group()
+            record_no_item = p.sub('',record)
+
+            in_record_properties = record_no_item.split('&')
             nsset ={}
-            nsset_property = nsset_property_str.split('=',1)
-            nsset_property[0] = nsset_property[0].replace('nsset['+str(count+1)+'][','')
-            nsset_property[0] = nsset_property[0].replace(']','')
-            prop = nsset_property[0]
-            value = nsset_property[1]
-            nsset[prop] = value
 
-    nssets.append(nsset)
+            for nsset_property_str in in_record_properties:
+
+                if not nsset_property_str == '':
+                    nsset_property_str = nsset_property_str.replace('[','')
+                    nsset_property_str = nsset_property_str.replace(']','')
+                    nsset_property_str = nsset_property_str.split('=',1)
+                    prop = nsset_property_str[0]
+                    value =nsset_property_str[1]
+                    nsset[prop] = value
+
+            nssets.append(nsset)
 
     return nssets
+
+
+
 
 def parse_to_rr(in_str):
 
