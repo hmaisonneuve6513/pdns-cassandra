@@ -127,6 +127,7 @@ def parse_to_nssets(in_str):
             for nsset_property_str in in_record_properties:
 
                 if not nsset_property_str == '':
+                    print 'Parsing property: ' + nsset_property_str
                     nsset_property_str = nsset_property_str.replace('[','')
                     nsset_property_str = nsset_property_str.replace(']','')
                     nsset_property_str = nsset_property_str.split('=',1)
