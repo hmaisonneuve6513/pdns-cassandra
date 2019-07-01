@@ -11,6 +11,7 @@ __license__ = 'MIT'
 __version__ = '0.0.1'
 
 import os
+import re
 
 import cassandra.cluster
 import cassandra.query
