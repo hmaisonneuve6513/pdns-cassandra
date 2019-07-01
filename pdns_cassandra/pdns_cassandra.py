@@ -106,28 +106,27 @@ def parse_to_rrsets( in_str ):
 
 def parse_to_nssets(in_str):
 
-    import re
-    print 'Parsing to nssets :'+ in_str
+    print ('Parsing to nssets :' + in_str)
     count = 0
     index = 0
     nssets = []
 
-    records = in_str.split('&1&')
+    records = in_str.split('&1')
     nb_records = len(records)
 
     for record in records:
 
+        nsset ={}
+
         if not record == '':
             p = re.compile(r'nsset\[\d+\]')
             record_no_item = p.sub('',record)
-
             in_record_properties = record_no_item.split('&')
-            nsset ={}
 
             for nsset_property_str in in_record_properties:
 
                 if not nsset_property_str == '':
-                    print 'Parsing property: ' + nsset_property_str
+                    print ('Parsing property: ' + nsset_property_str)
                     nsset_property_str = nsset_property_str.replace('[','')
                     nsset_property_str = nsset_property_str.replace(']','')
                     nsset_property_str = nsset_property_str.split('=',1)
@@ -135,6 +134,7 @@ def parse_to_nssets(in_str):
                     value =nsset_property_str[1]
                     nsset[prop] = value
 
+        if nsset:
             nssets.append(nsset)
 
     return nssets
